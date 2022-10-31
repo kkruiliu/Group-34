@@ -1,0 +1,14 @@
+{
+  "name": "default_string",
+  "id": "default_string",
+  "checkout_history": {
+    "author_h": "default_string",
+    "title_h": "default_string",
+    "date_borrow_h": "2001/01/02" //year/month/day
+  },
+  "checkout_current": {
+    "author_c": "default_string",
+    "title_c": "default_string",
+    "date_borrow_c": "2001/01/02" //year/month/day
+  }
+}
