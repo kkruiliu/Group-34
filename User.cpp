@@ -21,7 +21,12 @@ void User::checkoutBook(Book book) {
 	current_checkouts.push_back(book);
 }
 void User::returnBook(Book book) {
-	//TODO: ITERATE THROUGH CURRENT CHECKOUTS AND REMOVE BOOK
+	for (int i = 0; i<current_checkouts.size(); i++) {
+		if (current_checkouts[i].isbn == book.isbn) {
+			current_checkouts.erase(current_checkouts.begin() + i);
+			break;
+		}
+	}
 	checkout_history.push_back(book);
 }
 void User::pushChanges() {

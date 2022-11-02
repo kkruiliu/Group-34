@@ -6,7 +6,8 @@ using namespace std:
 //Leaving Book class as public. If you think private is better lets discuss with the team.
 
 struct Book{
-    String author;
+    string name;
+    string author;
     string isbn;
     string reviews;
     vector<Reviews> review_history;
