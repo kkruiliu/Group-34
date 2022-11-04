@@ -1,0 +1,54 @@
+{
+	"users": {
+		"john224": {
+			"password": "password123",
+			"checkout_history": ["112", "327", "131"],
+			"checkout_current": "212",
+			"checkout_date": "11/04/2022"
+		},
+		"jane2001": {
+			"password": "hellothere",
+			"checkout_history": [],
+			"checkout_current": "112",
+			"checkout_date": "11/01/2022"
+		},
+		"mr_mackie": {
+			"password": "football963",
+			"checkout_history": ["131", "502"],
+			"checkout_current": "327",
+			"checkout_date": "10/27/2022"
+		}
+	},
+	"books": {
+		"112": {
+			"name": "The Great Gatsby",
+			"author": "F. Scott Fitzgerald",
+			"year": "1925",
+			"available": false
+		},
+		"131": {
+			"name": "To Kill a Mockingbird",
+			"author": "Harper Lee",
+			"year": "1960",
+			"available": true
+		},
+		"212": {
+			"name": "The Catcher in the Rye",
+			"author": "J. D. Salinger",
+			"year": "1951",
+			"available": false
+		},
+		"327": {
+			"name": "Nineteen Eighty-Four",
+			"author": "George Orwell",
+			"year": "1949",
+			"available": false
+		},
+		"502": {
+			"name": "Beloved",
+			"author": "Toni Morrison",
+			"year": "1987",
+			"available": true
+		}
+	}
+}
