@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.21)
+project(Group_34)
+
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(.)
+
+add_executable(Group_34
+        User.cpp
+        User.h
+        Book.cpp
+        Book.h
+        log_in_alpha.cpp
+        main.cpp
+        MainWindow.cpp
+        MainWindow.h
+        MainWindow.ui
+        Reviews.cpp
+        Reviews.h
+        )
