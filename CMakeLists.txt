@@ -12,9 +12,6 @@ add_executable(Group_34
         Book.h
         log_in_alpha.cpp
         main.cpp
-        MainWindow.cpp
-        MainWindow.h
-        MainWindow.ui
         Reviews.cpp
         Reviews.h
         )

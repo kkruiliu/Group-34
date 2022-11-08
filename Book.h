@@ -1,5 +1,7 @@
+#pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 #include "Reviews.h"
 using namespace std;
 
@@ -10,12 +12,14 @@ struct Book{
     string name;
     string author;
     string isbn;
+
     string reviews;
     vector<Reviews> review_history;
 
-    Book(string author, string isbn);
+    Book(string author, string isbn, string reviews);
+
     //When the user turns in a book prompt the option to add a review
-    void add_review(string name, int rating, string feedback);
+    void add_review();
     //Delete review if the user decided they don't want to keep it.
     void delete_review(Reviews review);
     //Print review History
