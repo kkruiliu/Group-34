@@ -1,0 +1,8 @@
+-- Downloading https://github.com/open-source-parsers/jsoncpp/archive/1.9.5.tar.gz -> open-source-parsers-jsoncpp-1.9.5.tar.gz...
+-- Extracting source C:/src/vcpkg/downloads/open-source-parsers-jsoncpp-1.9.5.tar.gz
+-- Using source at C:/src/vcpkg/buildtrees/jsoncpp/src/1.9.5-13b47286ba.clean
+-- Found external ninja('1.10.2').
+-- Configuring x86-windows
+-- Building x86-windows-dbg
+-- Building x86-windows-rel
+-- Installing: C:/src/vcpkg/packages/jsoncpp_x86-windows/share/jsoncpp/copyright
