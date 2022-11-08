@@ -1,5 +1,7 @@
+#pragma once
 #include <string>
 #include <vector>
+#include <iostream>
 #include "Book.h"
 
 class User
