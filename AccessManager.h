@@ -26,6 +26,8 @@ public:
 
         while (!validCredentials) {
             cout << "\nCreate a new BWOB account:\n" <<endl;
+            cout << "Username requires minimum 6 and maximum 16 characters. Supports lowercase letters, uppercase letters, numbers, and underscores." << endl;
+            cout <<"Password requires minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character" << endl;
 
             cout << "Username: " << endl;
             cin >> username;
