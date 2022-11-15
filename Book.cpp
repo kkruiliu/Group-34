@@ -1,11 +1,19 @@
 #include "Book.h"
 
-Book::Book(string _author, string _isbn, string _reviews) {
-    author = _author;
-    isbn = _isbn;
-    reviews = _reviews;
+Book::Book(string isbn) {
+    author = "PULL AUTHOR FROM DATABASE";
+    this->isbn = isbn;
+    reviews = "PULL REVIEWS FROM DATABASE";
+    name = "PULL NAME FROM DATABASE";
 
     //review_history is empty till we add a review.
+}
+
+Book::Book(){
+    author = "";
+    this->isbn = "-1";
+    reviews = "";
+    name = "";
 }
 
 void Book::add_review() {
