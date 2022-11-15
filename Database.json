@@ -1,54 +1,74 @@
 {
-	"users": {
-		"john224": {
-			"password": "password123",
-			"checkout_history": ["112", "327", "131"],
-			"checkout_current": "212",
-			"checkout_date": "11/04/2022"
+	"books" : 
+	{
+		"-1" : 
+		{
+			"author" : "",
+			"available" : true,
+			"name" : "Nothing",
+			"year" : ""
 		},
-		"jane2001": {
-			"password": "hellothere",
-			"checkout_history": [],
-			"checkout_current": "112",
-			"checkout_date": "11/01/2022"
+		"112" : 
+		{
+			"author" : "F. Scott Fitzgerald",
+			"available" : false,
+			"name" : "The Great Gatsby",
+			"year" : "1925"
 		},
-		"mr_mackie": {
-			"password": "football963",
-			"checkout_history": ["131", "502"],
-			"checkout_current": "327",
-			"checkout_date": "10/27/2022"
+		"131" : 
+		{
+			"author" : "Harper Lee",
+			"available" : true,
+			"name" : "To Kill a Mockingbird",
+			"year" : "1960"
+		},
+		"212" : 
+		{
+			"author" : "J. D. Salinger",
+			"available" : false,
+			"name" : "The Catcher in the Rye",
+			"year" : "1951"
+		},
+		"327" : 
+		{
+			"author" : "George Orwell",
+			"available" : false,
+			"name" : "Nineteen Eighty-Four",
+			"year" : "1949"
+		},
+		"502" : 
+		{
+			"author" : "Toni Morrison",
+			"available" : true,
+			"name" : "Beloved",
+			"year" : "1987"
 		}
 	},
-	"books": {
-		"112": {
-			"name": "The Great Gatsby",
-			"author": "F. Scott Fitzgerald",
-			"year": "1925",
-			"available": false
+	"users" : 
+	{
+		"jane2001" : 
+		{
+			"checkout_date" : "Nov 01 2022",
+			"checkout_history" : [],
+			"current_checkout" : "112",
+			"name" : "Jane Doe",
+			"password" : "hellothere"
 		},
-		"131": {
-			"name": "To Kill a Mockingbird",
-			"author": "Harper Lee",
-			"year": "1960",
-			"available": true
+		"john224" : 
+		{
+			"checkout_date" : "Oct 31 2022",
+			"checkout_history" : [ "112", "327", "131"],
+			"current_checkout" : "212",
+			"name" : "John Mathers",
+			"password" : "password123"
 		},
-		"212": {
-			"name": "The Catcher in the Rye",
-			"author": "J. D. Salinger",
-			"year": "1951",
-			"available": false
-		},
-		"327": {
-			"name": "Nineteen Eighty-Four",
-			"author": "George Orwell",
-			"year": "1949",
-			"available": false
-		},
-		"502": {
-			"name": "Beloved",
-			"author": "Toni Morrison",
-			"year": "1987",
-			"available": true
+		"mr_mackie" : 
+		{
+			"checkout_date" : "Oct 27 2022",
+			"checkout_history" : [ "131", "502" ],
+			"current_checkout" : "327",
+			"name" : "Matthew Mackie",
+			"password" : "football963"
 		}
 	}
 }
