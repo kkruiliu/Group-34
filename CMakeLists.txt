@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(.)
 
 add_executable(Group_34
-        "User.cpp"
+     
         "User.h"
         "Book.cpp"
         "Book.h"
