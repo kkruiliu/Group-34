@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-#include <jsoncpp/json/json.h>
+#include <json.h>
 
 using namespace std;
 
@@ -13,7 +13,7 @@ class User
 	std::string name;
 	std::string username;
 	std::vector<std::string> checkout_history;
-	std::string current_checkout;
+	std::string current_checkout;;
 	std::string checkout_date;
 public:
 	User(std::string username);
@@ -35,6 +35,7 @@ User::User(string username) {
 	reader.parse(file, data);
 
 	name = data["users"][username]["name"].asString();
+
 	for(int i=0; i<data["users"][username]["checkout_history"].size(); i++){
 		checkout_history.push_back(data["users"][username]["checkout_history"][i].asString());
 	}
@@ -70,21 +71,24 @@ std::string User::getCurrentCheckout() {
 	return current_checkout;
 }
 void User::checkoutBook(string isbn) {
-	current_checkout = isbn;
-	fstream file("Database.json");
-	Json::Reader reader;
-	Json::StyledStreamWriter writer;
-	Json::Value data;
+	current_checkout = isbn;			//Stores the ISBN(BOOK) in the vector that holds checkouts. 
+	fstream file("Database.json");		//Loads the file stream
+	Json::Reader reader;				//Read and parse JSON data
+	Json::StyledStreamWriter writer;	//Write JSON data in human-readable form
+	Json::Value data;					//Store JSON data and make it accessible
 
-	reader.parse(file, data);
+	reader.parse(file, data);			//Read a Value from a JSON document. 
 
-	data["users"][username]["current_checkout"] = isbn;
+	// Access the data at that username and adds the book that was last checked out to the current checkout
+	data["users"][username]["current_checkout"] = isbn;	
+	 
 
-	time_t now = time(0);
+	time_t now = time(0);				//Stores the time since the book was last checked out
 	string date_time = ctime(&now);
 	date_time = date_time.substr(4, 7) + date_time.substr(20, 4);
 	data["users"][username]["checkout_date"] = date_time;
 	checkout_date = date_time;
+	
 
 	file.close();
 	ofstream closer;
@@ -104,6 +108,7 @@ void User::returnBook() {
 
 		reader.parse(file, data);
 		
+		// . append adds an item to a list.
 		data["users"][username]["checkout_history"].append(current_checkout);
 		checkout_history.push_back(current_checkout);
 		current_checkout = "-1";

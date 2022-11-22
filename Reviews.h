@@ -4,9 +4,9 @@ using namespace std;
 
 struct Reviews {
     string name;
-    int rating;
+    string rating;
     string feedback;
 
-    Reviews(string name, int rating, string feedback);
+    Reviews(string name, string rating, string feedback);
 };
 

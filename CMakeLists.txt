@@ -14,7 +14,5 @@ add_executable(Group_34
         "main.cpp"
         "Reviews.cpp"
         "Reviews.h"
-        "MainWindow.cpp"
-        "MainWindow.h"
         "Database.json"
         )
