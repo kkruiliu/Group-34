@@ -26,8 +26,7 @@ add_executable(Group_34
         "main.cpp"
         "Reviews.cpp"
         "Reviews.h"
-        "MainWindow.cpp"
-        "MainWindow.h"
+        "textBox.h"
         "Database.json")
 
 target_link_libraries(Group_34 PRIVATE sfml-graphics sfml-window sfml-system jsoncpp_lib)

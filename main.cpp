@@ -1,9 +1,21 @@
 #include "AccessManager.h"
 #include "User.h"
+#include "textBox.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
 using namespace std;
+
+sf::Font loadFont(string file) {
+    sf::Font font;
+
+    if (!font.loadFromFile(file))
+    {
+        cout << "Error loading file" << endl;
+    }
+
+    return font;
+}
 
 void setTitle(sf::RenderWindow& window) {
     //Draw title bar
@@ -16,11 +28,8 @@ void setTitle(sf::RenderWindow& window) {
     window.draw(titleBar);
 
     //Draw main title
-    sf::Font font;
-    if (!font.loadFromFile("Front_End/Montserrat-Bold.ttf"))
-    {
-        cout << "Error loading file" << endl;
-    }
+
+    sf::Font font = loadFont("Front_End/Montserrat-Bold.ttf");
 
     //Draw title
     sf::Text title;
@@ -71,11 +80,7 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
     passwordBox.setPosition(900, 740);
     window.draw(passwordBox);
 
-    sf::Font upFont;
-    if (!upFont.loadFromFile("Front_End/times new roman.ttf"))
-    {
-        cout << "Error loading file" << endl;
-    }
+    sf::Font upFont = loadFont("Front_End/times new roman.ttf");
 
     //Draw username string
     sf::Text username;
@@ -118,9 +123,6 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
     window.draw(login);
 
-    
-
-
 }
 
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
@@ -130,39 +132,83 @@ void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, s
     setLoginBox(window, usernameBox, passwordBox);
 }
 
+void LeftMouseClick(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
+    sf::RectangleShape& passwordBox, sf::Event& event, sf::Text& outputText) {
+
+    string input;
+    auto mousePos = sf::Mouse::getPosition(window);
+    
+    if (usernameBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+      
+    }
+
+    else if (passwordBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+        
+        
+    }
+
+   
+}
+
 int main(int argc, char const** argv){
 
-
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
-    string input;
+
+    //user input 
     sf::Text output;
+    sf::Font outFont = loadFont("Front_End/times new roman.ttf");
+    output.setFont(outFont);
+
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
     sf::RectangleShape passwordBox(sf::Vector2f(275, 50));
 
-    while (window.isOpen())
-    {
+    textBox userText(false);
+    textBox passText(false);
+
+    userText.setFont(outFont);
+    passText.setFont(outFont);
+    userText.setPosition(sf::Vector2f(905, 647));
+    passText.setPosition(sf::Vector2f(905, 747));
+
+    while (window.isOpen()){
+
+        sf::Event event;
+        auto mousePos = sf::Mouse::getPosition(window);
+
+        //check if user clicks on text boxes
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (usernameBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                passText.setSelected(false);
+                userText.setSelected(true);
+            }
+
+            else if (passwordBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                userText.setSelected(false);
+                passText.setSelected(true);
+
+            }
+        }
+
+
+        while (window.pollEvent(event)){
+            switch (event.type) {
+                // "close requested" event: we close the window
+            case sf::Event::Closed:
+                window.close();
+
+                //check if username or password is being typed
+            case sf::Event::TextEntered:
+                userText.typedOn(event);
+                passText.typedOn(event);
+                
+            }
+        }
 
         window.clear(sf::Color(220, 220, 220));
 
         LoadMainWindow(window, usernameBox, passwordBox);
-
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-                if (event.type == sf::Event::TextEntered) {
-                       input += event.text.unicode;
-                       output.setString(input);
-                }
-
-
-        }
-
-        window.draw(output);
+        userText.drawTo(window);
+        passText.drawTo(window);
 
         window.display();
     }
