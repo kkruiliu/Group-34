@@ -22,6 +22,7 @@ add_executable(Group_34
         "User.h"
         "Book.cpp"
         "Book.h"
+        "Button.h"
         "log_in_alpha.cpp"
         "main.cpp"
         "Reviews.cpp"

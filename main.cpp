@@ -1,6 +1,7 @@
 #include "AccessManager.h"
-#include "User.h"
+#include "Button.h"
 #include "textBox.h"
+#include "User.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
@@ -8,6 +9,7 @@ using namespace std;
 
 sf::Font loadFont(string file) {
     sf::Font font;
+    file = "Front_End/" + file;
 
     if (!font.loadFromFile(file))
     {
@@ -15,6 +17,17 @@ sf::Font loadFont(string file) {
     }
 
     return font;
+}
+
+sf::Texture loadTexture(string file) {
+    sf::Texture texture;
+    file = "Front_End/" + file;
+
+    if (!texture.loadFromFile(file)) {
+        cout << "Error loading file" << endl;
+    }
+
+    return texture;
 }
 
 void setTitle(sf::RenderWindow& window) {
@@ -29,7 +42,7 @@ void setTitle(sf::RenderWindow& window) {
 
     //Draw main title
 
-    sf::Font font = loadFont("Front_End/Montserrat-Bold.ttf");
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
 
     //Draw title
     sf::Text title;
@@ -54,20 +67,6 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
     loginBox.setPosition(710, 600);
     window.draw(loginBox);
 
-    sf::RectangleShape createAccBox(sf::Vector2f(200, 50));
-    createAccBox.setFillColor(sf::Color(220, 220, 220));
-    createAccBox.setOutlineThickness(2.f);
-    createAccBox.setOutlineColor(sf::Color(90, 90, 90));
-    createAccBox.setPosition(750, 840);
-    window.draw(createAccBox);
-
-    sf::RectangleShape loginBBox(sf::Vector2f(200, 50));
-    loginBBox.setFillColor(sf::Color(220, 220, 220));
-    loginBBox.setOutlineThickness(2.f);
-    loginBBox.setOutlineColor(sf::Color(90, 90, 90));
-    loginBBox.setPosition(970, 840);
-    window.draw(loginBBox);
-
     usernameBox.setFillColor(sf::Color::White);
     usernameBox.setOutlineThickness(2.f);
     usernameBox.setOutlineColor(sf::Color(90, 90, 90)); 
@@ -80,7 +79,7 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
     passwordBox.setPosition(900, 740);
     window.draw(passwordBox);
 
-    sf::Font upFont = loadFont("Front_End/times new roman.ttf");
+    sf::Font upFont = loadFont("times new roman.ttf");
 
     //Draw username string
     sf::Text username;
@@ -103,26 +102,6 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
     window.draw(password);
 
-    sf::Text createAcc;
-
-    createAcc.setFont(upFont);
-    createAcc.setString("Create Account");
-    createAcc.setCharacterSize(25);
-    createAcc.setFillColor(sf::Color::Black);
-    createAcc.setPosition(765, 847);
-
-    window.draw(createAcc);
-
-    sf::Text login;
-
-    login.setFont(upFont);
-    login.setString("Login");
-    login.setCharacterSize(25);
-    login.setFillColor(sf::Color::Black);
-    login.setPosition(1035, 847);
-
-    window.draw(login);
-
 }
 
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
@@ -132,33 +111,21 @@ void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, s
     setLoginBox(window, usernameBox, passwordBox);
 }
 
-void LeftMouseClick(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
-    sf::RectangleShape& passwordBox, sf::Event& event, sf::Text& outputText) {
-
-    string input;
-    auto mousePos = sf::Mouse::getPosition(window);
-    
-    if (usernameBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-      
-    }
-
-    else if (passwordBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        
-        
-    }
-
-   
-}
-
 int main(int argc, char const** argv){
 
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
 
+    sf::Texture texture = loadTexture("BWB logo.png");
+    sf::Sprite logo(texture);
+    logo.setPosition(690, 170);
+    logo.scale(sf::Vector2f(0.75f, 0.75f));
+
     //user input 
     sf::Text output;
-    sf::Font outFont = loadFont("Front_End/times new roman.ttf");
+    sf::Font outFont = loadFont("times new roman.ttf");
     output.setFont(outFont);
 
+    //username and password text creation
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
     sf::RectangleShape passwordBox(sf::Vector2f(275, 50));
 
@@ -169,6 +136,14 @@ int main(int argc, char const** argv){
     passText.setFont(outFont);
     userText.setPosition(sf::Vector2f(905, 647));
     passText.setPosition(sf::Vector2f(905, 747));
+
+    //create account and login button creation
+    Button createAcc("Create Account", { 200, 50 }, 25);
+    Button loginB("Login", { 200,50 }, 25);
+    createAcc.setFont(outFont);
+    createAcc.setPosition(sf::Vector2f(750, 840));
+    loginB.setFont(outFont);
+    loginB.setPosition(sf::Vector2f(970, 840));
 
     while (window.isOpen()){
 
@@ -200,8 +175,34 @@ int main(int argc, char const** argv){
             case sf::Event::TextEntered:
                 userText.typedOn(event);
                 passText.typedOn(event);
-                
+                break;
+            
+            case sf::Event::MouseMoved:
+                if (createAcc.isMouseTouching(window)) {
+                    createAcc.setBgColor(sf::Color(200, 200, 200));
+                }
+
+                else if (loginB.isMouseTouching(window)) {
+                    loginB.setBgColor(sf::Color(200, 200, 200));
+                }
+
+                else {
+                    createAcc.setBgColor(sf::Color(220, 220, 220));
+                    loginB.setBgColor(sf::Color(220, 220, 220));
+                }
+            case sf::Event::MouseButtonPressed:
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+
+                    if (createAcc.isMouseTouching(window)) {
+                        cout << "Create Account Pressed" << endl;
+                    }
+
+                    else if (loginB.isMouseTouching(window)) {
+                        cout << "Login Button Pressed" << endl;
+                    }
+                }
             }
+
         }
 
         window.clear(sf::Color(220, 220, 220));
@@ -209,6 +210,9 @@ int main(int argc, char const** argv){
         LoadMainWindow(window, usernameBox, passwordBox);
         userText.drawTo(window);
         passText.drawTo(window);
+        createAcc.drawTo(window);
+        loginB.drawTo(window);
+        window.draw(logo);
 
         window.display();
     }

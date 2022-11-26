@@ -76,6 +76,10 @@ public:
 			text.setString(newT);
 		}
 
+		else if (!sel) {
+			text.setString("");
+		}
+
 		else if (sel) {
 			text.setString(input.str() + "|");
 		}
