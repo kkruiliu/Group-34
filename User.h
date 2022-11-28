@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 using namespace std;
 
