@@ -7,6 +7,7 @@ class Button {
 private: 
 	sf::RectangleShape button;
 	sf::Text text;
+	bool clicked;
 
 public:
 
@@ -21,6 +22,8 @@ public:
 		button.setFillColor(sf::Color(220, 220, 220));
 		button.setOutlineThickness(2.f);
 		button.setOutlineColor(sf::Color(90, 90, 90));
+
+		clicked = false;
 	}
 
 	void setFont(sf::Font& font) {
@@ -53,6 +56,14 @@ public:
 		}
 
 		return false;
+	}
+
+	void setClicked(bool val) {
+		clicked = val;
+	}
+
+	bool getClicked() {
+		return clicked;
 	}
 
 		
