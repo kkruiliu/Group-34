@@ -5,56 +5,65 @@
 #include <vector>
 #include <regex>
 #include <map>
+#include <SFML/Graphics.hpp>
 
 using namespace std;
 
 ifstream fin("User.json");
 ofstream fout("User.json", ios_base::app);
 
-class AcessManager {
+class AccessManager {
 
 private:
     vector <string> usernames; //all the usernames of the existing accounts
     vector <string> passwords; //all the passwords of the existing accounts
     vector <string> id_;
 public:
-    void SignUp() {
+    void SignUp(sf::RenderWindow& window, sf::Font& font, string username, string password) {
         //TODO: Randomly Generate ID
 
-        string username, password, id;
         bool validCredentials = false;
 
+        //error box if there is an issue
+        sf::RectangleShape errorBox(sf::Vector2f(500, 100));
+        errorBox.setFillColor(sf::Color(255, 228, 228));
+        errorBox.setOutlineThickness(3.f);
+        errorBox.setOutlineColor(sf::Color::Red);
+        errorBox.setPosition(410, 160);
+
+        sf::Text errorMessage;
+        errorMessage.setFont(font);
+        errorMessage.setCharacterSize(20);
+        errorMessage.setFillColor(sf::Color::Black);
+        errorMessage.setPosition(410, 160);
+        
         while (!validCredentials) {
-            cout << "\nCreate a new BWOB account:\n" <<endl;
-            cout << "Username requires minimum 6 and maximum 16 characters. Supports lowercase letters, uppercase letters, numbers, and underscores." << endl;
-            cout <<"Password requires minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character" << endl;
 
-            cout << "Username: " << endl;
-            cin >> username;
-            cout << "Password: "<< endl;
-            cin >> password;
-            cout << "ID:"<< endl;
-            cin >> id;
+            ////Accepts upper case/ lower case/ underscores / numbers. 6-16 characters
+            //regex usernameRequirement("^[A-Za-z0-9_]{6,16}+$");
+            //bool  validUsername = regex_search(username,usernameRequirement);
+            ////Minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter,
+            //// one number and one special character
+            //regex passwordRequirement("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,16}$");
+            //bool  validPassword = regex_search(password,passwordRequirement);
+            //if (!validUsername) {
 
-            //Accepts upper case/ lower case/ underscores / numbers. 6-16 characters
-            regex usernameRequirement = regex("^[A-Za-z0-9_]{6,16}+$");
-            bool  validUsername = regex_search(username,usernameRequirement);
-            //Minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter,
-            // one number and one special character
-            regex passwordRequirement = regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,16}$");
-            bool  validPassword = regex_search(password,passwordRequirement);
-            if (!validUsername) {
-                cout << "Username does not meet the minimum requirements. Please try again using the proper username specifications" << endl;
-            }
-            if (!validPassword) {
-                cout << "Password does not meet the minimum requirements. Please try again using the proper password specifications" << endl;
-            }
-            if (validUsername &&validPassword){
+            //    window.draw(errorBox);
+            //    errorMessage.setString("Username does not meet the minimum requirements.\n Please try again using the proper username specifications");
+            //    window.draw(errorMessage);
+            //}
+            //if (!validPassword) {
+
+            //    window.draw(errorBox);
+            //    errorMessage.setString("Password does not meet the minimum requirements.\n Please try again using the proper password specifications");
+            //    window.draw(errorMessage);
+            //}
+
                 validCredentials = true;
                 insert_username(username);
                 insert_password(password);
-                insert_id(id);
-            }
+                //insert_id(id);
+            
         }
 
         //TODO: After Creating account. Need to take in profile details such as name.

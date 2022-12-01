@@ -104,6 +104,66 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
 }
 
+void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox,
+    sf::RectangleShape& passwordVeriBox) {
+    sf::RectangleShape loginBox(sf::Vector2f(500, 400));
+    loginBox.setFillColor(sf::Color(200, 200, 200));
+    loginBox.setOutlineThickness(3.f);
+    loginBox.setOutlineColor(sf::Color(90, 90, 90));
+    loginBox.setPosition(710, 400);
+    window.draw(loginBox);
+
+    usernameBox.setFillColor(sf::Color::White);
+    usernameBox.setOutlineThickness(2.f);
+    usernameBox.setOutlineColor(sf::Color(90, 90, 90));
+    usernameBox.setPosition(900, 440);
+    window.draw(usernameBox);
+
+    passwordBox.setFillColor(sf::Color::White);
+    passwordBox.setOutlineThickness(2.f);
+    passwordBox.setOutlineColor(sf::Color(90, 90, 90));
+    passwordBox.setPosition(900, 540);
+    window.draw(passwordBox);
+
+    passwordVeriBox.setFillColor(sf::Color::White);
+    passwordVeriBox.setOutlineThickness(2.f);
+    passwordVeriBox.setOutlineColor(sf::Color(90, 90, 90));
+    passwordVeriBox.setPosition(900, 640);
+    window.draw(passwordVeriBox);
+
+    sf::Font upFont = loadFont("times new roman.ttf");
+
+    //Draw username string
+    sf::Text username;
+
+    username.setFont(upFont);
+    username.setString("Username:");
+    username.setCharacterSize(35);
+    username.setFillColor(sf::Color::Black);
+    username.setPosition(720, 440);
+
+    window.draw(username);
+
+    sf::Text password;
+
+    password.setFont(upFont);
+    password.setString("Password:");
+    password.setCharacterSize(35);
+    password.setFillColor(sf::Color::Black);
+    password.setPosition(720, 540);
+
+    window.draw(password);
+
+    sf::Text passwordVeri;
+    passwordVeri.setFont(upFont);
+    passwordVeri.setString("Confirm\nPassword:");
+    passwordVeri.setCharacterSize(35);
+    passwordVeri.setFillColor(sf::Color::Black);
+    passwordVeri.setPosition(720, 620);
+
+    window.draw(passwordVeri);
+}
+
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
 
     setTitle(window);
@@ -111,19 +171,79 @@ void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, s
     setLoginBox(window, usernameBox, passwordBox);
 }
 
+void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox,
+    sf::RectangleShape& passwordVeriBox) {
+
+    setTitle(window);
+
+    setCreateAccBox(window, usernameBox, passwordBox, passwordVeriBox);
+
+}
+
+void LoadLoginWindow(sf::RenderWindow& window, string username) {
+    setTitle(window);
+}
+
+void VerifyCreateAcc(sf::RenderWindow& window, AccessManager control, textBox& userText, textBox& passText,
+    textBox& passVeriText) {
+
+    string username = userText.getText();
+    string password = passText.getText();
+    string passwordVeri = passVeriText.getText();
+
+    sf::Font font = loadFont("times new roman.ttf");
+
+    if (password != passwordVeri) {
+        //error box if there is an issue
+        sf::RectangleShape errorBox(sf::Vector2f(500, 50));
+        errorBox.setFillColor(sf::Color(255, 228, 228));
+        errorBox.setOutlineThickness(3.f);
+        errorBox.setOutlineColor(sf::Color::Red);
+        errorBox.setPosition(710, 300);
+
+        sf::Text errorMessage;
+        errorMessage.setFont(font);
+        errorMessage.setString("Passwords do not match. Please try again.");
+        errorMessage.setCharacterSize(20);
+        errorMessage.setFillColor(sf::Color::Black);
+        errorMessage.setPosition(710, 300);
+
+        window.draw(errorBox);
+        window.draw(errorMessage);
+
+        cout << "What?" << endl;
+       
+    }
+
+    else {
+        cout << "Starting sign up process" << endl;
+      
+        control.SignUp(window, font, username, password);
+    }
+}
+
 int main(int argc, char const** argv){
+    AccessManager control;
+
+    //booleans to check which window to load
+    bool mainWinOpen = true;
+    bool createAccWinOpen = false;
+    bool loginWinOpen = false;
+    bool setVerification = false; //checks whether verification box should be displayed
+    bool accCreated = false; //checks whether an account was properly created
 
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
 
+    //user input font
+    sf::Text output;
+    sf::Font outFont = loadFont("times new roman.ttf");
+    output.setFont(outFont);
+
+/* MAIN WINDOW TEXTURES AND FONTS*/
     sf::Texture texture = loadTexture("BWB logo.png");
     sf::Sprite logo(texture);
     logo.setPosition(690, 170);
     logo.scale(sf::Vector2f(0.75f, 0.75f));
-
-    //user input 
-    sf::Text output;
-    sf::Font outFont = loadFont("times new roman.ttf");
-    output.setFont(outFont);
 
     //username and password text creation
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
@@ -145,6 +265,30 @@ int main(int argc, char const** argv){
     loginB.setFont(outFont);
     loginB.setPosition(sf::Vector2f(970, 840));
 
+/*CREATE ACCOUNT WINDOW TEXTURES AND FONTS*/
+    sf::RectangleShape passVeriBox(sf::Vector2f(275, 50));
+    textBox passVeriText(false);
+
+    passVeriText.setFont(outFont);
+    passVeriText.setPosition(sf::Vector2f(905, 647));
+
+    Button createAcc2("Create Account", { 200, 50 }, 25);
+    createAcc2.setFont(outFont);
+    createAcc2.setPosition(sf::Vector2f(850, 740));
+
+    Button verifyUser("Ok", { 50, 25 }, 25);
+    verifyUser.setFont(outFont);
+    verifyUser.setPosition(sf::Vector2f(850, 200));
+
+    //Username and password requirements
+    sf::Text requirements;
+    requirements.setFont(outFont);
+    requirements.setString("*Username requires minimum 6 and maximum 16 characters.Supports lowercase letters, uppercase letters, numbers, and underscores.\n*Password requires minimum 6 and maximum 16 characters, at least one uppercase letter, one lowercase letter, one number and one special character");
+    requirements.setCharacterSize(20);
+    requirements.setFillColor(sf::Color::Black);
+    requirements.setPosition(410, 850);
+
+/*MAIN SFML FUNCTION WITH WINDOW*/
     while (window.isOpen()){
 
         sf::Event event;
@@ -154,13 +298,21 @@ int main(int argc, char const** argv){
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
             if (usernameBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 passText.setSelected(false);
+                passVeriText.setSelected(false);
                 userText.setSelected(true);
             }
 
             else if (passwordBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 userText.setSelected(false);
+                passVeriText.setSelected(false);
                 passText.setSelected(true);
 
+            }
+
+            else if (passVeriBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                userText.setSelected(false);
+                passText.setSelected(false);
+                passVeriText.setSelected(true);
             }
         }
 
@@ -175,30 +327,60 @@ int main(int argc, char const** argv){
             case sf::Event::TextEntered:
                 userText.typedOn(event);
                 passText.typedOn(event);
+                passVeriText.typedOn(event);
                 break;
             
             case sf::Event::MouseMoved:
-                if (createAcc.isMouseTouching(window)) {
-                    createAcc.setBgColor(sf::Color(200, 200, 200));
-                }
-
-                else if (loginB.isMouseTouching(window)) {
-                    loginB.setBgColor(sf::Color(200, 200, 200));
-                }
-
-                else {
-                    createAcc.setBgColor(sf::Color(220, 220, 220));
-                    loginB.setBgColor(sf::Color(220, 220, 220));
-                }
-            case sf::Event::MouseButtonPressed:
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-
+                if (mainWinOpen) {
                     if (createAcc.isMouseTouching(window)) {
-                        cout << "Create Account Pressed" << endl;
+                        createAcc.setBgColor(sf::Color(200, 200, 200));
                     }
 
                     else if (loginB.isMouseTouching(window)) {
-                        cout << "Login Button Pressed" << endl;
+                        loginB.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        createAcc.setBgColor(sf::Color(220, 220, 220));
+                        loginB.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
+
+                if (createAccWinOpen) {
+                    if (createAcc2.isMouseTouching(window)) {
+                        createAcc2.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        createAcc2.setBgColor(sf::Color(220, 220, 200));
+                    }
+                }
+
+            case sf::Event::MouseButtonPressed:
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    if (mainWinOpen) {
+                        if (createAcc.isMouseTouching(window)) {
+                            createAccWinOpen = true;
+                            loginWinOpen = false;
+                            mainWinOpen = false;
+
+                            userText.setPosition(sf::Vector2f(905, 447));
+                            passText.setPosition(sf::Vector2f(905, 547));
+                        }
+
+                        //HAVE TO VERIFY BEFORE GOING TO LOGIN PAGE
+                        else if (loginB.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            createAccWinOpen = false;
+                            mainWinOpen = false;
+                        }
+                    }
+
+                    if (createAccWinOpen) {
+                        if (createAcc2.isMouseTouching(window)) {
+                            setVerification = true;
+                            createAcc2.setClicked(true);
+                        }
                     }
                 }
             }
@@ -207,13 +389,32 @@ int main(int argc, char const** argv){
 
         window.clear(sf::Color(220, 220, 220));
 
-        LoadMainWindow(window, usernameBox, passwordBox);
-        userText.drawTo(window);
-        passText.drawTo(window);
-        createAcc.drawTo(window);
-        loginB.drawTo(window);
-        window.draw(logo);
+        if (mainWinOpen) {
+            LoadMainWindow(window, usernameBox, passwordBox);
+            userText.drawTo(window);
+            passText.drawTo(window);
+            createAcc.drawTo(window);
+            loginB.drawTo(window);
+            window.draw(logo);
+        }
 
+        if (createAccWinOpen) {
+            LoadCreateAccWindow(window, usernameBox, passwordBox, passVeriBox);
+            userText.drawTo(window);
+            passText.drawTo(window);
+            passVeriText.drawTo(window);
+            createAcc2.drawTo(window);
+            window.draw(requirements);
+            if (createAcc2.getClicked()) {
+                VerifyCreateAcc(window, control, userText, passText, passVeriText);
+            }
+        }
+
+        if (loginWinOpen) {
+            LoadLoginWindow(window, "John");
+
+        }
+        
         window.display();
     }
 
