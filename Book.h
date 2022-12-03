@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include "Database.h"
 
 //#include "Reviews.h"
 using namespace std;
@@ -49,11 +50,8 @@ Book::Book(string _isbn, string _author, string _year, bool _availability, strin
 //Since we are preStoring Books onto the database...
 //ALL BOOKS NEED TO BE STORED IN THE VECTOR. READ THE DATABASE AND CREATE BOOK OBJECTS
 void Book::instantiateBookCollection() {
-    fstream file("Database.json");		//Loads the file stream
-    Json::Reader reader;				//Read and parse JSON data
-    //Json::StyledStreamWriter writer;	//Write JSON data in human-readable form
-    Json::Value data;					//Store JSON data and make it accessible
-    reader.parse(file, data);			//Read a Value from a JSON document. 
+
+    Json::Value data = readData();					//Store JSON data and make it accessible
 
     //Store all books from the "JSON database" into a vector for easier access. 
     for (auto const& id : data["books"].getMemberNames()) {
@@ -80,11 +78,8 @@ void Book::instantiateBookCollection() {
 
 //add review parameter
 void Book::add_review() {
-    fstream file("Database.json");		//Loads the file stream
-    Json::Reader reader;				//Read and parse JSON data
-    Json::StyledStreamWriter writer;	//Write JSON data in human-readable form
-    Json::Value data;					//Store JSON data and make it accessible
-    reader.parse(file, data);			//Read a Value from a JSON document. 
+
+    Json::Value data = readData();					//Store JSON data and make it accessible
 
     //Utilizing SMFL, Ask user if they want to leave a review...
     //Click on the star 1 - 5. Each star should have corresponding rating...
@@ -109,19 +104,11 @@ void Book::add_review() {
     data["books"][isbn]["rating"] = rating;                         //Store into JSON      
 
 
-    file.close();
-    ofstream closer;
-    closer.open("Database.json");
-    closer.close();
-    file.open("Database.json");
-    writer.write(file, data);
+    writeData(data);
 }
 void Book::print_ratings(string isbn) {
-    fstream file("Database.json");		//Loads the file stream
-    Json::Reader reader;				//Read and parse JSON data
-    Json::StyledStreamWriter writer;	//Write JSON data in human-readable form
-    Json::Value data;					//Store JSON data and make it accessible
-    reader.parse(file, data);			//Read a Value from a JSON document. 
+
+    Json::Value data = readData();					//Store JSON data and make it accessible
 
     /*for (int i = 0; i < data["books"][isbn]["ratings"].size(); i++) {
     }*/
@@ -139,11 +126,9 @@ void Book::print_ratings(string isbn) {
 }
 
 bool Book::searchBooks(string isbn) {
-    ifstream file("Database.json");
-    Json::Reader reader;
-    Json::Value data;
 
-    reader.parse(file, data);
+    Json::Value data = readData();
+
 
     bool available = false;
 

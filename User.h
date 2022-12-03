@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-#include <json/json.h>
 #include "Database.h"
 
 using namespace std;
