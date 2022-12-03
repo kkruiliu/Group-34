@@ -1,47 +1,53 @@
 {
 	"books" : 
 	{
-		"-1" : 
-		{
-			"author" : "",
-			"available" : true,
-			"name" : "Nothing",
-			"year" : ""
+		"-1": {
+			"author": "",
+			"available": true,
+			"name": "Nothing",
+			"year": "",
+			"rating": "",
+			"ratings": []
 		},
-		"112" : 
-		{
-			"author" : "F. Scott Fitzgerald",
-			"available" : false,
-			"name" : "The Great Gatsby",
-			"year" : "1925"
+		"112": {
+			"author": "F. Scott Fitzgerald",
+			"available": false,
+			"name": "The Great Gatsby",
+			"year": "1925",
+			"rating": "",
+			"ratings": []
 		},
-		"131" : 
-		{
-			"author" : "Harper Lee",
-			"available" : true,
-			"name" : "To Kill a Mockingbird",
-			"year" : "1960"
+		"131": {
+			"author": "Harper Lee",
+			"available": true,
+			"name": "To Kill a Mockingbird",
+			"year": "1960",
+			"rating": "",
+			"ratings": []
 		},
-		"212" : 
-		{
-			"author" : "J. D. Salinger",
-			"available" : false,
-			"name" : "The Catcher in the Rye",
-			"year" : "1951"
+		"212": {
+			"author": "J. D. Salinger",
+			"available": false,
+			"name": "The Catcher in the Rye",
+			"year": "1951",
+			"rating": "",
+			"ratings": []
 		},
-		"327" : 
-		{
-			"author" : "George Orwell",
-			"available" : false,
-			"name" : "Nineteen Eighty-Four",
-			"year" : "1949"
+		"327": {
+			"author": "George Orwell",
+			"available": false,
+			"name": "Nineteen Eighty-Four",
+			"year": "1949",
+			"rating": "",
+			"ratings": []
 		},
-		"502" : 
-		{
-			"author" : "Toni Morrison",
-			"available" : true,
-			"name" : "Beloved",
-			"year" : "1987"
+		"502": {
+			"author": "Toni Morrison",
+			"available": true,
+			"name": "Beloved",
+			"year": "1987",
+			"rating": "",
+			"ratings": []
 		}
 	},
 	"users" : 
