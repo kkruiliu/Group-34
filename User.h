@@ -5,6 +5,7 @@
 #include <fstream>
 #include <ctime>
 #include <json/json.h>
+#include "Database.h"
 
 using namespace std;
 
@@ -28,11 +29,8 @@ public:
 
 User::User(string username) {
 	this->username = username;
-	ifstream file("Database.json");
-	Json::Reader reader;
-	Json::Value data;
 
-	reader.parse(file, data);
+	Json::Value data = readData();
 
 	name = data["users"][username]["name"].asString();
 	for(int i=0; i<data["users"][username]["checkout_history"].size(); i++){
@@ -71,12 +69,8 @@ std::string User::getCurrentCheckout() {
 }
 void User::checkoutBook(string isbn) {
 	current_checkout = isbn;
-	fstream file("Database.json");
-	Json::Reader reader;
-	Json::StyledStreamWriter writer;
-	Json::Value data;
 
-	reader.parse(file, data);
+	Json::Value data = readData();
 
 	data["users"][username]["current_checkout"] = isbn;
 
@@ -86,23 +80,13 @@ void User::checkoutBook(string isbn) {
 	data["users"][username]["checkout_date"] = date_time;
 	checkout_date = date_time;
 
-	file.close();
-	ofstream closer;
-	closer.open("Database.json");
-	closer.close();
-	file.open("Database.json");
-
-	writer.write(file, data);
+	writeData(data);
 
 }
 void User::returnBook() {
 	if(current_checkout != "-1"){
-		fstream file("Database.json");
-		Json::Reader reader;
-		Json::StyledStreamWriter writer;
-		Json::Value data;
 
-		reader.parse(file, data);
+		Json::Value data = readData();
 		
 		data["users"][username]["checkout_history"].append(current_checkout);
 		checkout_history.push_back(current_checkout);
@@ -112,12 +96,6 @@ void User::returnBook() {
 		data["users"][username]["current_checkout"] = "-1";
 		data["users"][username]["checkout_date"] = "";
 		
-		file.close();
-		ofstream closer;
-		closer.open("Database.json");
-		closer.close();
-		file.open("Database.json");
-
-		writer.write(file, data);
+		writeData(data);
 	}
 }
