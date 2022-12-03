@@ -16,7 +16,8 @@ struct Book{
     string reviews;
     vector<Reviews> review_history;
 
-    Book(string author, string isbn, string reviews);
+    Book(string isbn);
+    Book();
 
     //When the user turns in a book prompt the option to add a review
     void add_review();
