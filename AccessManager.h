@@ -6,6 +6,7 @@
 #include <regex>
 #include <map>
 #include <SFML/Graphics.hpp>
+#include "Database.h"
 
 using namespace std;
 
@@ -41,6 +42,8 @@ public:
         if (validUsername && validPassword) {
             insert_username(username);
             insert_password(password);
+
+            User currentUser(username, password, "Default Name");
 
             return true;
         }
