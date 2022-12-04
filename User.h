@@ -17,6 +17,7 @@ class User
 	std::string checkout_date;
 public:
 	User(std::string username);
+	User(string username, string password, string name);
 	std::string getName();
 	std::string getUsername();
 	std::vector<std::string> getCheckoutHistory();
@@ -37,6 +38,24 @@ User::User(string username) {
 	}
 	current_checkout = data["users"][username]["current_checkout"].asString();
 	checkout_date = data["users"][username]["checkout_date"].asString();
+}
+User::User(string username, string password, string name) {
+	this->username = username;
+	this->name = name;
+
+	vector<string> emptyvec;
+	Json::Value data = readData();
+
+	Json::Value user;
+	user["checkout_date"] = "Never";
+	user["checkout_history"] = Json::arrayValue;
+	user["current_checkout"] = "-1";
+	user["name"] = name;
+	user["password"] = password;
+
+	data["users"][username] = user;
+	writeData(data);
+
 }
 void User::print(){
 	cout << "==============================" << endl;
