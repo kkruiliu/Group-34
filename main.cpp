@@ -182,44 +182,92 @@ void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameB
 
 void LoadLoginWindow(sf::RenderWindow& window, string username) {
     setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString("Welcome, " + username);
+
+    window.draw(welcomeText);
 }
 
-void VerifyCreateAcc(sf::RenderWindow& window, AccessManager control, textBox& userText, textBox& passText,
-    textBox& passVeriText) {
+bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
+    textBox& passVeriText, string& errorMessage) {
 
     string username = userText.getText();
     string password = passText.getText();
     string passwordVeri = passVeriText.getText();
 
+    bool verified;
+
+
     sf::Font font = loadFont("times new roman.ttf");
 
+
     if (password != passwordVeri) {
-        //error box if there is an issue
-        sf::RectangleShape errorBox(sf::Vector2f(500, 50));
-        errorBox.setFillColor(sf::Color(255, 228, 228));
-        errorBox.setOutlineThickness(3.f);
-        errorBox.setOutlineColor(sf::Color::Red);
-        errorBox.setPosition(710, 300);
-
-        sf::Text errorMessage;
-        errorMessage.setFont(font);
-        errorMessage.setString("Passwords do not match. Please try again.");
-        errorMessage.setCharacterSize(20);
-        errorMessage.setFillColor(sf::Color::Black);
-        errorMessage.setPosition(710, 300);
-
-        window.draw(errorBox);
-        window.draw(errorMessage);
-
-        cout << "What?" << endl;
-       
+        errorMessage = "Passwords do not match. Please try again.";
+        return false;
     }
 
     else {
-        cout << "Starting sign up process" << endl;
-      
-        control.SignUp(window, font, username, password);
+        verified = control.SignUp(username, password);
+
+        if (!verified) {
+            errorMessage = "Username or Password does not meet the requirements. Please try again.";
+            return verified;
+        }
+
+        else
+            return verified;
+        
     }
+}
+
+bool VerifyLogin(sf::RenderWindow& window, AccessManager& control, textBox& username, textBox& password) {
+    string user = username.getText();
+    string pass = password.getText();
+
+    control.LoginIn(user, pass);
+
+    return control.loggedIn;
+}
+
+void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, string message) {
+    sf::Font outFont = loadFont("times new roman.ttf");
+
+    //error box if there is an issue
+    sf::RectangleShape errorBox(sf::Vector2f(650, 50));
+    errorBox.setOutlineThickness(3.f);
+    errorBox.setPosition(posB);
+
+    sf::Text errorMessage;
+    errorMessage.setFont(outFont);
+    errorMessage.setCharacterSize(20);
+    errorMessage.setFillColor(sf::Color::Black);
+    errorMessage.setString(message);
+    //put message in the middle of the error box
+    float x = (posB.x + errorBox.getGlobalBounds().width / 2) - (errorMessage.getGlobalBounds().width / 2);
+    float y = -10 + (posB.y + errorBox.getGlobalBounds().height / 2) - (errorMessage.getGlobalBounds().height / 2);
+    errorMessage.setPosition(x,y);
+
+    //error message box
+    if (!status) {
+        errorBox.setFillColor(sf::Color(255, 228, 228));
+        errorBox.setOutlineColor(sf::Color::Red);
+    }
+
+    //confirmation message
+    else {
+        errorBox.setFillColor(sf::Color(144,238, 144));
+        errorBox.setOutlineColor(sf::Color::Green);
+    }
+
+    window.draw(errorBox);
+    window.draw(errorMessage);
 }
 
 int main(int argc, char const** argv){
@@ -229,8 +277,12 @@ int main(int argc, char const** argv){
     bool mainWinOpen = true;
     bool createAccWinOpen = false;
     bool loginWinOpen = false;
-    bool setVerification = false; //checks whether verification box should be displayed
+    bool setVerification; //checks whether verification box should be displayed
+    bool setVerificationLog = false; //checks whether login was successful
     bool accCreated = false; //checks whether an account was properly created
+    bool enteredClickCA = false; 
+    bool enteredClickL = false;
+    bool loggedIn;
 
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
 
@@ -238,6 +290,12 @@ int main(int argc, char const** argv){
     sf::Text output;
     sf::Font outFont = loadFont("times new roman.ttf");
     output.setFont(outFont);
+
+    //set position for any additional text boxes
+    sf::Vector2f posB;
+
+    //string for any error or confirmation messages
+    string errorMessage;
 
 /* MAIN WINDOW TEXTURES AND FONTS*/
     sf::Texture texture = loadTexture("BWB logo.png");
@@ -364,15 +422,16 @@ int main(int argc, char const** argv){
                             loginWinOpen = false;
                             mainWinOpen = false;
 
+                            userText.clear();
+                            passText.clear();
+
                             userText.setPosition(sf::Vector2f(905, 447));
                             passText.setPosition(sf::Vector2f(905, 547));
                         }
 
                         //HAVE TO VERIFY BEFORE GOING TO LOGIN PAGE
                         else if (loginB.isMouseTouching(window)) {
-                            loginWinOpen = true;
-                            createAccWinOpen = false;
-                            mainWinOpen = false;
+                            loginB.setClicked(true);
                         }
                     }
 
@@ -389,32 +448,87 @@ int main(int argc, char const** argv){
 
         window.clear(sf::Color(220, 220, 220));
 
+
+        if (loginB.getClicked()) {
+            enteredClickL = true;
+            setVerificationLog = VerifyLogin(window, control, userText, passText);
+
+            if (setVerificationLog) {
+                loginWinOpen = true;
+                createAccWinOpen = false;
+                mainWinOpen = false;
+            }
+
+            loginB.setClicked(false);
+        }
+
         if (mainWinOpen) {
+            userText.setPosition(sf::Vector2f(905, 647));
+            passText.setPosition(sf::Vector2f(905, 747));
+
             LoadMainWindow(window, usernameBox, passwordBox);
             userText.drawTo(window);
             passText.drawTo(window);
             createAcc.drawTo(window);
             loginB.drawTo(window);
             window.draw(logo);
+
+            posB = { 650, 970 };
+
+            if (enteredClickL && !setVerificationLog) {
+                DrawErrorMessage(window, posB, false, "Username or password is incorrect");
+            }
         }
 
         if (createAccWinOpen) {
+            enteredClickL = false;
+
             LoadCreateAccWindow(window, usernameBox, passwordBox, passVeriBox);
             userText.drawTo(window);
             passText.drawTo(window);
             passVeriText.drawTo(window);
             createAcc2.drawTo(window);
             window.draw(requirements);
+
+            posB = { 650, 300 };
+
             if (createAcc2.getClicked()) {
-                VerifyCreateAcc(window, control, userText, passText, passVeriText);
+                enteredClickCA = true;
+
+                accCreated = VerifyCreateAcc(window, control, userText, passText, passVeriText, errorMessage);
+
+                if (!accCreated) {
+                    setVerification = false;
+                }
+                
+                else {
+                    //Go back to the main window. 
+                    loginWinOpen = false;
+                    createAccWinOpen = false;
+                    mainWinOpen = true;
+                    accCreated = false;
+                    userText.clear();
+                    passText.clear();
+
+                    setVerification = true;
+                }
+
+                createAcc2.setClicked(false);
             }
+
+            if (enteredClickCA) {
+                if (!setVerification)
+                    DrawErrorMessage(window, posB, false, errorMessage);
+
+            }
+            
         }
 
         if (loginWinOpen) {
-            LoadLoginWindow(window, "John");
-
+            string username = userText.getText();
+            LoadLoginWindow(window, username);
         }
-        
+
         window.display();
     }
 

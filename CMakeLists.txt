@@ -19,9 +19,10 @@ include_directories(.)
 
 add_executable(Group_34
 
+        "AccessManager.h"
         "User.h"
-        "Book.cpp"
-        "Book.h"
+        #"Book.cpp"
+        #"Book.h"
         "Button.h"
         "log_in_alpha.cpp"
         "main.cpp"
