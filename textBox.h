@@ -101,4 +101,14 @@ public:
 			
 		}
 	}
+
+	void clear() {
+		input.str("");
+		input.clear();
+		if (isSelected)
+			text.setString("|");
+
+		else
+			text.setString("");
+	}
 };
