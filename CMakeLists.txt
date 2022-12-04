@@ -19,6 +19,7 @@ include_directories(.)
 
 add_executable(Group_34
 
+        "AccessManager.h"
         "User.h"
         "Book.cpp"
         "Book.h"
@@ -27,8 +28,6 @@ add_executable(Group_34
         "main.cpp"
         "Reviews.cpp"
         "Reviews.h"
-        "MainWindow.cpp"
-        "MainWindow.h"
         "textBox.h"
         "Database.json" 
         "Database.h")
