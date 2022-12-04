@@ -18,10 +18,11 @@ private:
     vector <string> usernames; //all the usernames of the existing accounts
     vector <string> passwords; //all the passwords of the existing accounts
     vector <string> id_;
-public:
-    bool loggedIn;
 
-    bool SignUp(sf::RenderWindow& window, sf::Font& font, string username, string password) {
+public:
+    bool loggedIn = false;
+
+    bool SignUp(string username, string password) {
         //TODO: Randomly Generate ID
   
         //Accepts upper case/ lower case/ underscores / numbers. 6-16 characters
@@ -58,33 +59,21 @@ public:
     }
 
 
-    void LoginIn(sf::RenderWindow& window, string username, string password) {
-        //See if the user is loggedin or not
-        loggedIn = false;
-
+    void LoginIn(string username, string password) {
         //create_vectors();
+        int size = accounts_number(); //the number of the accounts
+        cout << size << endl;
 
-        cout << "\nSign in. Use your BWOB account:\n" << endl;
-
-        while (!loggedIn) {
-            int size = accounts_number(); //the number of the accounts
-
-            //searches for an account that has the username, that the user entered
-            for (int i = 0; i < size; ++i) {
-                if (username == usernames[i]) {
-                    if (password == passwords[i]) {
-                        //if (id == id_[i]) {
-                            cout << "Welcome, " + username;
-                            loggedIn = true;
-                       // }
-                    }
+        //searches for an account that has the username, that the user entered
+        for (int i = 0; i < size; i++) {
+            if (username == usernames[i]) {
+                if (password == passwords[i]) {
+                    loggedIn = true;
                 }
             }
-            if (!loggedIn) {
-                cout << "The Username or the Password that you have entered are wrong!\nPlease try again." << endl;
-            }
-        }
+        }   
     }
+
     //creates the usernames and the passwords vectors
     void create_vectors() {
         string username, password, id;
@@ -94,6 +83,7 @@ public:
             insert_id(id);
         }
     }
+
     //returns the numbers of the accountts in the file
     int accounts_number() {
         return usernames.size();
