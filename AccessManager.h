@@ -65,14 +65,11 @@ public:
     void LoginIn(string username, string password) {
         //create_vectors();
         int size = accounts_number(); //the number of the accounts
-        cout << size << endl;
 
         //searches for an account that has the username, that the user entered
         for (int i = 0; i < size; i++) {
-            if (username == usernames[i]) {
-                if (password == passwords[i]) {
-                    loggedIn = true;
-                }
+            if ((username == usernames[i]) && (password == passwords[i])) {
+                loggedIn = true;
             }
         }   
     }
