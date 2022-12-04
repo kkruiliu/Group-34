@@ -346,6 +346,12 @@ int main(int argc, char const** argv){
     requirements.setFillColor(sf::Color::Black);
     requirements.setPosition(410, 850);
 
+/*LOGIN WINDOOW TEXTURES AND FONTS*/
+    Button signOut("Log Out", { 100, 30 }, 25);
+    signOut.setFont(outFont);
+    signOut.setPosition(sf::Vector2f(1750, 50));
+
+
 /*MAIN SFML FUNCTION WITH WINDOW*/
     while (window.isOpen()){
 
@@ -414,6 +420,16 @@ int main(int argc, char const** argv){
                     }
                 }
 
+                if (loginWinOpen) {
+                    if (signOut.isMouseTouching(window)) {
+                        signOut.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        signOut.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
+
             case sf::Event::MouseButtonPressed:
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     if (mainWinOpen) {
@@ -423,7 +439,8 @@ int main(int argc, char const** argv){
                             mainWinOpen = false;
 
                             userText.clear();
-                            passText.clear();
+                            passText.clear(); 
+                            passVeriText.clear();
 
                             userText.setPosition(sf::Vector2f(905, 447));
                             passText.setPosition(sf::Vector2f(905, 547));
@@ -439,6 +456,18 @@ int main(int argc, char const** argv){
                         if (createAcc2.isMouseTouching(window)) {
                             setVerification = true;
                             createAcc2.setClicked(true);
+                        }
+                    }
+
+                    if (loginWinOpen) {
+                        if (signOut.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            mainWinOpen = true;
+
+                            userText.clear();
+                            passText.clear();
+
+                            signOut.setClicked(true);
                         }
                     }
                 }
@@ -527,6 +556,7 @@ int main(int argc, char const** argv){
         if (loginWinOpen) {
             string username = userText.getText();
             LoadLoginWindow(window, username);
+            signOut.drawTo(window);
         }
 
         window.display();
