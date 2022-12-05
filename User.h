@@ -10,15 +10,14 @@ using namespace std;
 
 class User
 {
-	std::string name;
 	std::string username;
 	std::vector<std::string> checkout_history;
 	std::string current_checkout;
 	std::string checkout_date;
 public:
 	User(std::string username);
-	User(string username, string password, string name);
-	std::string getName();
+	User(string username, string password);
+	User();
 	std::string getUsername();
 	std::vector<std::string> getCheckoutHistory();
 	std::string getCurrentCheckout();
@@ -32,16 +31,14 @@ User::User(string username) {
 
 	Json::Value data = readData();
 
-	name = data["users"][username]["name"].asString();
 	for(int i=0; i<data["users"][username]["checkout_history"].size(); i++){
 		checkout_history.push_back(data["users"][username]["checkout_history"][i].asString());
 	}
 	current_checkout = data["users"][username]["current_checkout"].asString();
 	checkout_date = data["users"][username]["checkout_date"].asString();
 }
-User::User(string username, string password, string name) {
+User::User(string username, string password) {
 	this->username = username;
-	this->name = name;
 
 	vector<string> emptyvec;
 	Json::Value data = readData();
@@ -50,17 +47,21 @@ User::User(string username, string password, string name) {
 	user["checkout_date"] = "Never";
 	user["checkout_history"] = Json::arrayValue;
 	user["current_checkout"] = "-1";
-	user["name"] = name;
 	user["password"] = password;
 
 	data["users"][username] = user;
 	writeData(data);
 
 }
+
+User::User() {
+	this->username = "NULL";
+	this->current_checkout = "-1";
+	this->checkout_date = "Never";
+}
 void User::print(){
 	cout << "==============================" << endl;
 	cout << "Username is " << username << endl;
-	cout << "\nName is " << name << endl;
 	cout << "\nCheckout List: " << endl;
 	for(auto it = begin(checkout_history); it != end(checkout_history); ++it){
 		cout << *it << endl;
@@ -72,9 +73,6 @@ void User::print(){
 		cout << "\nNothing is currently checked out" << endl;
 	}
 	cout << "==============================" << endl;
-}
-std::string User::getName() {
-	return name;
 }
 std::string User::getUsername() {
 	return username;
