@@ -79,7 +79,7 @@ Book::Book(string _isbn, string _name, string _author, string _year) {
     emptymap["temp"] = "temp";
     emptymap.removeMember("temp");
     book["ratings"] = emptymap;
-
+    //book["ratings"] = Json::Value;
     data["books"][_isbn] = book;
     writeData(data);
 }
