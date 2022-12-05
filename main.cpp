@@ -215,6 +215,24 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
 
 }
 
+void LoadCheckOutHisWindow(sf::RenderWindow& window) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString("Your Checkout History: ");
+
+    window.draw(welcomeText);
+    setTitle(window);
+
+
+}
+
 bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
     textBox& passVeriText, string& errorMessage) {
 
@@ -461,6 +479,14 @@ int main(int argc, char const** argv){
                     else {
                         RentBook.setBgColor(sf::Color(220, 220, 220));
                     }
+                    if (CheckHistroy.isMouseTouching(window)) {
+                        CheckHistroy.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        CheckHistroy.setBgColor(sf::Color(220, 220, 220));
+
+                    }
                 }
 
             case sf::Event::MouseButtonPressed:
@@ -507,6 +533,12 @@ int main(int argc, char const** argv){
                             loginWinOpen = false;
                             checkOutBook = true; 
                             RentBook.setClicked(true);
+                        }
+                        if (CheckHistroy.isMouseTouching(window)) {
+                            loginWinOpen = false; 
+                            ViewHistroy = true; 
+                            CheckHistroy.setClicked(true); 
+
                         }
                     }
 
@@ -673,7 +705,19 @@ int main(int argc, char const** argv){
              
             } */
            
+        } 
+        if (ViewHistroy) {
+
+            sf::Texture texture_checkoutHis = loadTexture("UF.png");
+            sf::Sprite logo_checkoutHis(texture_checkoutHis);
+            logo_checkoutHis.setPosition(1530, 170);
+            logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
+            LoadCheckOutHisWindow(window); 
+            window.draw(logo_checkoutHis);
+
         }
+
+
         window.display();
     }
 
