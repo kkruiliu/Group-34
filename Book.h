@@ -13,71 +13,84 @@ struct Book {
     string author;
     string year;
     bool availability;
-    //vector<Book> bookCollection;
     string rating;
-    vector<string> bookRatings;
-
-    // ISBN     BOOK OBJECT ratings 
-    map<string, Book> bookCollection;
+    map<string, string> bookRatings;
 
     Book();
-    Book(string _isbn, string _author, string _year, bool _availability, string _rating, vector<string> _bookRatings);
+    Book(string _isbn);
+    Book(string _isbn, string name, string _author, string _year);
 
-    void instantiateBookCollection();
-    void add_review();
-    void print_ratings(string isbn);
-    static bool searchBooks(string isbn);
+    void add_review(string username, string review);
+
+    static map<string, Book> getBookCollection();
 };
 
 Book::Book() {
     author = "";
-    this->isbn = "-1";
+    isbn = "-1";
     availability = false;
     year = "";
+    rating = "Unrated";
 }
-Book::Book(string _isbn, string _author, string _year, bool _availability, string _rating, vector<string> _bookRatings) {
+Book::Book(string _isbn) {
+    Json::Value data = readData();
+    if (data["books"].isMember(_isbn)) {
+        author = data["books"][_isbn]["author"].asString();
+        isbn = _isbn;
+        availability = data["books"][_isbn]["available"].asBool();
+        year = data["books"][_isbn]["year"].asString();
+        rating = data["books"][_isbn]["rating"];
+        for (auto const& rating : data["books"][_isbn]["ratings"]) {
+            bookRatigns[rating] = data["books"][_isbn]["ratings"][rating];
+        }
+    }
+    else {
+        author = "";
+        isbn = "-1";
+        availability = false;
+        year = "";
+        rating = "Unrated";
+    }
+}
+Book::Book(string _isbn, string name, string _author, string _year) {
     isbn = _isbn;
     author = _author;
-    availability = _availability;
+    availability = true;
     year = _year;
-    rating = _rating;
+    rating = "Unrated";
 
-    for (int i = 0; i < _bookRatings.size(); i++) {
-        bookRatings.push_back(bookRatings[i]);
-    }
+    Json::Value data = readData();
+
+    Json::Value book;
+    book["author"] = _author;
+    book["available"] = true;
+    book["name"] = _name;
+    book["year"] = _year;
+    book["rating"] = "Unrated";
+    book["ratings"] = Json::Value;
+
+    data["books"][_isbn] = book;
+    writeData(data);
 }
 
 //Since we are preStoring Books onto the database...
 //ALL BOOKS NEED TO BE STORED IN THE VECTOR. READ THE DATABASE AND CREATE BOOK OBJECTS
-void Book::instantiateBookCollection() {
+vector<Book> Book::getBookCollection() {
 
     Json::Value data = readData();					//Store JSON data and make it accessible
+    vector<Book> books;
 
     //Store all books from the "JSON database" into a vector for easier access. 
     for (auto const& id : data["books"].getMemberNames()) {
-
-        if (id != "-1") {
-            isbn = id;                      //Assign Book an ISBN number
-            author = data["books"][id]["author"].asString();          //Assign author variable with name from database
-            year = data["books"][id]["year"].asString();              //Assign year variable with year from database
-            availability = data["books"][id]["available"].asBool();   //Assign availability variable with status from database
-            rating = data["books"][id]["rating"].asString();
-
-            for (int j = 0; j < data["books"][id]["Ratings"].size(); j++) {
-                bookRatings.push_back(data["books"][id]["Ratings"][j].asString());
-            }
-
-
-
-            Book bookFromJSON(isbn, author, year, availability, rating, bookRatings); //Create object
-            bookCollection.insert(pair<string, Book>(isbn, bookFromJSON));           //Store isbn and book into map
-        }
+        if (id != "-1")
+            books.push_back(Book(id));
     }
+    return books;
 }
 
 
 //add review parameter
-void Book::add_review() {
+void Book::add_review(string username, string review) {
 
     Json::Value data = readData();					//Store JSON data and make it accessible
 
@@ -85,58 +98,25 @@ void Book::add_review() {
     //Click on the star 1 - 5. Each star should have corresponding rating...
     //Grab the rating the User has selected and store that into the database
     //For now we use terminal as an example.
-    cout << "Enter a rating from 1-5 for the returning book: " << endl;
-    cin >> rating;
+
     //Add book rating to the database.... Store into JSON
-    data["books"][isbn]["ratings"].append(rating);
+    data["books"][isbn]["ratings"]["username"] = review;
 
 
     //UPDATE RATINGS of the current book------------------------------------------------------------ 
     //Access the current book ratings
-    int average;
-    int calculation;
-    for (int i = 0; i < data["books"][isbn]["ratings"].size(); i++) {
-        average += data["books"][isbn]["ratings"][i].asInt();
+    double total = 0;
+    for (auto const& user : data["books"][isbn]["ratings"].getMemberNames()) {
+        total += stod(data["books"][isbn]["ratings"][user].asString());
     }
 
-    calculation = average / data["books"][isbn]["ratings"].size();  //INT
+    double calculation = total / data["books"][isbn]["ratings"].getMemberNames().size();
     rating = to_string(calculation);                                //Convert into string
     data["books"][isbn]["rating"] = rating;                         //Store into JSON      
 
 
     writeData(data);
+    this->rating = rating;
+    this->bookRatings[username] = review;
 }
-void Book::print_ratings(string isbn) {
-
-    Json::Value data = readData();					//Store JSON data and make it accessible
-
-    /*for (int i = 0; i < data["books"][isbn]["ratings"].size(); i++) {
-    }*/
-
-    //PRINTS ALL RATINGS.
-    for (auto it = bookCollection.begin(); it != bookCollection.end(); ++it) {
-
-        if (it->first == isbn) {
-
-            for (int i = 0; i < it->second.bookRatings.size(); i++) {
-                cout << it->second.bookRatings[i];
-            }
-        }
-    }
-}
-
-bool Book::searchBooks(string isbn) {
-
-    Json::Value data = readData();
-
-
-    bool available = false;
-
-    if (data["books"].isMember(isbn)) {
-        available = data["books"][isbn]["available"].asBool();
-    }
-    return available;
-}
-
-
 
