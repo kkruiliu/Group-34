@@ -21,7 +21,7 @@ public:
 	std::string getUsername();
 	std::vector<std::string> getCheckoutHistory();
 	std::string getCurrentCheckout();
-	void checkoutBook(std::string isbn);
+	bool checkoutBook(std::string isbn);
 	void returnBook();
 	void print();
 };
@@ -82,26 +82,33 @@ std::vector<string> User::getCheckoutHistory() {
 std::string User::getCurrentCheckout() {
 	return current_checkout;
 }
-void User::checkoutBook(string isbn) {
-	current_checkout = isbn;
+bool User::checkoutBook(string isbn) {
 
 	Json::Value data = readData();
+	
+	if (data["books"][isbn]["available"].asBool()) {
+		current_checkout = isbn;
 
-	data["users"][username]["current_checkout"] = isbn;
+		data["users"][username]["current_checkout"] = isbn;
 
-	time_t now = time(0);
-	string date_time = ctime(&now);
-	date_time = date_time.substr(4, 7) + date_time.substr(20, 4);
-	data["users"][username]["checkout_date"] = date_time;
-	checkout_date = date_time;
+		time_t now = time(0);
+		string date_time = ctime(&now);
+		date_time = date_time.substr(4, 7) + date_time.substr(20, 4);
+		data["users"][username]["checkout_date"] = date_time;
+		checkout_date = date_time;
 
-	writeData(data);
+		data["books"][isbn]["available"] = false;
 
+		writeData(data);
+		return true;
+	}
+	return false;
 }
 void User::returnBook() {
 	if(current_checkout != "-1"){
-
 		Json::Value data = readData();
+
+		data["books"][current_checkout]["available"] = true;
 		
 		data["users"][username]["checkout_history"].append(current_checkout);
 		checkout_history.push_back(current_checkout);
