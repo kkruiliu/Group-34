@@ -192,7 +192,29 @@ void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
     welcomeText.setFillColor(sf::Color::Blue);
     welcomeText.setString("Welcome, " + control.activeUser.getUsername());
 
+
     window.draw(welcomeText);
+}
+
+void LoadCheckOutWindow(sf::RenderWindow& window) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString("What we read today ");
+
+    
+
+    window.draw(welcomeText);
+    setTitle(window);
+
+
+
 }
 
 bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
@@ -213,7 +235,6 @@ bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& 
 
     else {
         string signUpMessage = control.SignUp(username, password);
-
         if (signUpMessage != "Successfully created account!") {
             errorMessage = signUpMessage;
             return false;
@@ -281,6 +302,8 @@ int main(int argc, char const** argv){
     bool enteredClickCA = false; 
     bool enteredClickL = false;
     bool loggedIn;
+    bool checkOutBook = false; 
+    bool ViewHistroy = false; 
 
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
 
@@ -349,6 +372,13 @@ int main(int argc, char const** argv){
     signOut.setFont(outFont);
     signOut.setPosition(sf::Vector2f(1750, 50));
 
+    Button RentBook("Check out a book now", { 400, 70 }, 40); 
+    RentBook.setFont(outFont); 
+    RentBook.setPosition(sf::Vector2f(400, 700));  
+
+    Button CheckHistroy("View your checkout history", { 500, 70 }, 40);
+    CheckHistroy.setFont(outFont);
+    CheckHistroy.setPosition(sf::Vector2f(1200, 700));
 
 /*MAIN SFML FUNCTION WITH WINDOW*/
     while (window.isOpen()){
@@ -426,6 +456,13 @@ int main(int argc, char const** argv){
                     else {
                         signOut.setBgColor(sf::Color(220, 220, 220));
                     }
+                    if (RentBook.isMouseTouching(window)) {
+                        RentBook.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        RentBook.setBgColor(sf::Color(220, 220, 220));
+                    }
                 }
 
             case sf::Event::MouseButtonPressed:
@@ -468,7 +505,14 @@ int main(int argc, char const** argv){
 
                             signOut.setClicked(true);
                         }
+                        if (RentBook.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            checkOutBook = true; 
+                            RentBook.setClicked(true);
+                        }
                     }
+
+
                 }
             }
 
@@ -553,8 +597,26 @@ int main(int argc, char const** argv){
         }
 
         if (loginWinOpen) {
+            sf::Texture texture_login = loadTexture("UF.png"); 
+            sf::Sprite logo_login(texture_login); 
+            logo_login.setPosition(830, 230);
+            logo_login.scale(sf::Vector2f(1.00f, 1.00f));
             LoadLoginWindow(window, control);
+            window.draw(logo_login);
             signOut.drawTo(window);
+            RentBook.drawTo(window); 
+            CheckHistroy.drawTo(window);  
+        }
+
+
+        if (checkOutBook) {           
+            sf::Texture texture_checkout = loadTexture("UF.png");
+            sf::Sprite logo_checkout(texture_checkout);
+            logo_checkout.setPosition(1530, 170);
+            logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
+            LoadCheckOutWindow(window); 
+            window.draw(logo_checkout); 
+          
         }
 
         window.display();
