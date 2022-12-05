@@ -21,12 +21,9 @@ add_executable(Group_34
 
         "AccessManager.h"
         "User.h"
-        #"Book.cpp"
-        #"Book.h"
+        "Book.h"
         "Button.h"
         "main.cpp"
-        "Reviews.cpp"
-        "Reviews.h"
         "textBox.h"
         "Database.json" 
         "Database.h")

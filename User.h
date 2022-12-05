@@ -40,7 +40,6 @@ User::User(string username) {
 User::User(string username, string password) {
 	this->username = username;
 
-	vector<string> emptyvec;
 	Json::Value data = readData();
 
 	Json::Value user;
