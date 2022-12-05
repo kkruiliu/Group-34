@@ -461,6 +461,7 @@ int main(int argc, char const** argv){
 
                     if (loginWinOpen) {
                         if (signOut.isMouseTouching(window)) {
+                            control.logOut();
                             loginWinOpen = false;
                             mainWinOpen = true;
 
