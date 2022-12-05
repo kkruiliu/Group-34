@@ -45,9 +45,9 @@ Book::Book(string _isbn) {
         availability = data["books"][_isbn]["available"].asBool();
         name = data["books"][_isbn]["name"].asString();
         year = data["books"][_isbn]["year"].asString();
-        rating = data["books"][_isbn]["rating"];
-        for (auto const& rating : data["books"][_isbn]["ratings"]) {
-            bookRatings[rating] = data["books"][_isbn]["ratings"][rating];
+        rating = data["books"][_isbn]["rating"].asString();
+        for (auto const& rating : data["books"][_isbn]["ratings"].getMemberNames()) {
+            bookRatings[rating] = data["books"][_isbn]["ratings"][rating].asString();
         }
     }
     else {
@@ -75,7 +75,10 @@ Book::Book(string _isbn, string _name, string _author, string _year) {
     book["name"] = _name;
     book["year"] = _year;
     book["rating"] = "Unrated";
-    book["ratings"] = Json::Value;
+    Json::Value emptymap;
+    emptymap["temp"] = "temp";
+    emptymap.removeMember("temp");
+    book["ratings"] = emptymap;
 
     data["books"][_isbn] = book;
     writeData(data);
