@@ -202,8 +202,6 @@ bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& 
     string password = passText.getText();
     string passwordVeri = passVeriText.getText();
 
-    bool verified;
-
 
     sf::Font font = loadFont("times new roman.ttf");
 
@@ -214,15 +212,15 @@ bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& 
     }
 
     else {
-        verified = control.SignUp(username, password);
+        string signUpMessage = control.SignUp(username, password);
 
-        if (!verified) {
-            errorMessage = "Username or Password does not meet the requirements. Please try again.";
-            return verified;
+        if (signUpMessage != "Successfully created account!") {
+            errorMessage = signUpMessage;
+            return false;
         }
 
         else
-            return verified;
+            return true;
         
     }
 }
