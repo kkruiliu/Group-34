@@ -260,7 +260,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("What will you read today?");
+    welcomeText.setString("Book Checkout List");
 
     sf::RectangleShape checkOutBox(sf::Vector2f(1200, 600));
     checkOutBox.setFillColor(sf::Color::White);
@@ -272,6 +272,21 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     window.draw(checkOutBox);
 
     ShowBooks(window);
+}
+
+void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString(control.activeUser.getUsername()+ "'s checkout history");
+
+    window.draw(welcomeText);
 }
 
 bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
@@ -688,6 +703,16 @@ int main(int argc, char const** argv){
             LoadCheckOutWindow(window); 
             window.draw(logo_checkout); 
          
+        }
+
+        if (ViewHistroy) {
+            sf::Texture texture_checkoutHis = loadTexture("UF.png");
+            sf::Sprite logo_checkoutHis(texture_checkoutHis);
+            logo_checkoutHis.setPosition(1530, 170);
+            logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
+            LoadCheckOutWindowHis(window,control);
+            window.draw(logo_checkoutHis);
+           
         }
 
         window.display();
