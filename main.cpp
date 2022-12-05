@@ -1,4 +1,5 @@
 #include "AccessManager.h"
+#include "Book.h"
 #include "Button.h"
 #include "textBox.h"
 #include "User.h"
@@ -165,6 +166,57 @@ void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
     window.draw(passwordVeri);
 }
 
+void ShowBooks(sf::RenderWindow& window) {
+    Book currBook;
+    
+    sf::Font outFont = loadFont("times new roman.ttf");
+
+    bool available;
+    sf::Text BookList;
+    sf::Text BookData;
+    sf::Text availability;
+    BookList.setFont(outFont);
+    BookList.setCharacterSize(40);
+    BookList.setFillColor(sf::Color::Black);
+
+    BookData.setFont(outFont);
+    BookData.setCharacterSize(30);
+    BookList.setFillColor(sf::Color::Black);
+
+    availability.setFont(outFont);
+    availability.setCharacterSize(40);
+
+    float y_pos = 450;
+    float prevBook = 0;
+
+    vector<Book> bookDisplay = currBook.getBookCollection();
+    
+    for (int i = 0; i < bookDisplay.size(); i++) {
+        available = bookDisplay[i].availability;
+      
+        BookList.setString(to_string(i + 1) + " : " + bookDisplay[i].name + " - " + bookDisplay[i].author + "\n     Year: " + bookDisplay[i].year + "  | Rating: " + bookDisplay[i].rating);
+
+        if (available) {
+            availability.setString("Available");
+            availability.setFillColor(sf::Color(0, 100, 0));
+        }
+
+        else {
+            availability.setString("Not Available");
+            availability.setFillColor(sf::Color::Red);
+        }
+
+
+        BookList.setPosition(sf::Vector2f(500, (y_pos + (i * 35) + prevBook)));
+        availability.setPosition(sf::Vector2f((510 + BookList.getGlobalBounds().width), (y_pos + (i * 35) + prevBook)));
+        window.draw(BookList);
+        window.draw(availability);
+
+        prevBook = BookList.getGlobalBounds().height;
+        
+    }
+}
+
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
 
     setTitle(window);
@@ -201,36 +253,25 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     setTitle(window);
 
     sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Font outFont = loadFont("times new roman.ttf");
     sf::Text welcomeText;
 
     welcomeText.setFont(font);
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("Books Without Boundaries Book Collection:");
+    welcomeText.setString("What will you read today?");
+
+    sf::RectangleShape checkOutBox(sf::Vector2f(1200, 600));
+    checkOutBox.setFillColor(sf::Color::White);
+    checkOutBox.setOutlineThickness(3.f);
+    checkOutBox.setOutlineColor(sf::Color(90, 90, 90));
+    checkOutBox.setPosition(350, 425);
 
     window.draw(welcomeText);
-    setTitle(window);
+    window.draw(checkOutBox);
 
-
-}
-
-void LoadCheckOutHisWindow(sf::RenderWindow& window) {
-    setTitle(window);
-
-    sf::Font font = loadFont("Montserrat-Bold.ttf");
-    sf::Text welcomeText;
-
-    welcomeText.setFont(font);
-    welcomeText.setCharacterSize(45);
-    welcomeText.setPosition(sf::Vector2f(10, 200));
-    welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("Your Checkout History: ");
-
-    window.draw(welcomeText);
-    setTitle(window);
-
-
+    ShowBooks(window);
 }
 
 bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
@@ -646,77 +687,8 @@ int main(int argc, char const** argv){
             logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindow(window); 
             window.draw(logo_checkout); 
-            //load JSON into this vector 
-           // std::vector<string> rects;   
-            //Examples 
-           // rects.push_back("Title: Odyssey     Author: Homer");  
-            std::string line; 
-            std::ifstream file; 
-            std::list<sf::Text> textList; 
-            sf::Text text; 
-            text.setFont(outFont);
-            text.setCharacterSize(40); 
-            text.setFillColor(sf::Color::Black); 
-            //TODO: Need to work on Database.json 
-            file.open("test.txt"); //a test file
-            if (file.is_open())
-            {
-                while (std::getline(file, line))
-                {
-                    //Getting every line of the .txt file and putting it in the 'line' string
-                    text.setString(line);
-                    textList.push_back(text);
-                }
-            }
-
-            float i = 0;
-            for (std::list<sf::Text>::iterator it = textList.begin(); it != textList.end(); ++it)
-            {
-                sf::Text& text = *it;
-                sf::FloatRect boundings = text.getLocalBounds();
-                text.setPosition(100, 400+i * (boundings.height + 5));
-                ++i;
-                window.draw(text); 
-                //draw or something here
-            }
-
-
-          /*  rects.push_back("Title: Example2    Author: Example2");
-            unsigned int width = 1000;  
-            unsigned int height = 500;
-
-            sf::Event event; 
-            while (window.pollEvent(event)) {
-                switch (event.type)
-                {
-                }
-            }
-        
-            for (unsigned int i = 0; i < rects.size(); i++)
-            {  
-                 
-                sf::Text BookList;
-                BookList.setFont(outFont);
-                BookList.setCharacterSize(40);
-                BookList.setFillColor(sf::Color::Black);
-                BookList.setString(" "+ rects[i]+"\n");
-                BookList.setPosition(sf::Vector2f(width, height)); 
-                window.draw(BookList); 
-             
-            } */
-           
-        } 
-        if (ViewHistroy) {
-
-            sf::Texture texture_checkoutHis = loadTexture("UF.png");
-            sf::Sprite logo_checkoutHis(texture_checkoutHis);
-            logo_checkoutHis.setPosition(1530, 170);
-            logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
-            LoadCheckOutHisWindow(window); 
-            window.draw(logo_checkoutHis);
-
+         
         }
-
 
         window.display();
     }
