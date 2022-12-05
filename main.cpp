@@ -180,7 +180,7 @@ void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameB
 
 }
 
-void LoadLoginWindow(sf::RenderWindow& window, string username) {
+void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
     setTitle(window);
 
     sf::Font font = loadFont("Montserrat-Bold.ttf");
@@ -190,7 +190,7 @@ void LoadLoginWindow(sf::RenderWindow& window, string username) {
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("Welcome, " + username);
+    welcomeText.setString("Welcome, " + control.activeUser.getUsername());
 
     window.draw(welcomeText);
 }
@@ -231,7 +231,7 @@ bool VerifyLogin(sf::RenderWindow& window, AccessManager& control, textBox& user
     string user = username.getText();
     string pass = password.getText();
 
-    control.LoginIn(user, pass);
+    control.logIn(user, pass);
 
     return control.loggedIn;
 }
@@ -554,29 +554,12 @@ int main(int argc, char const** argv){
         }
 
         if (loginWinOpen) {
-            string username = userText.getText();
-            LoadLoginWindow(window, username);
+            LoadLoginWindow(window, control);
             signOut.drawTo(window);
         }
 
         window.display();
     }
-
-    //AcessManager control;
-
-    //control.SignUp();
-    //control.LoginIn();
-
-    User user1("john224");
-    cout << "(1) INITIAL STATE" << endl;
-    user1.print();
-    user1.returnBook();
-    cout << "(2) BOOK RETURN" << endl;
-    user1.print();
-    user1.checkoutBook("502");
-    cout << "(3) BOOK CHECKOUT" << endl;
-    user1.print();
-
 
     return 0;
 }
