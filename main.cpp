@@ -207,7 +207,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("What we read today?");
+    welcomeText.setString("Books Without Boundaries Book Collection:");
 
     window.draw(welcomeText);
     setTitle(window);
