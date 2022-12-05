@@ -4,6 +4,7 @@
 #include "User.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <list> 
 
 using namespace std;
 
@@ -206,13 +207,10 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString("What we read today ");
-
-    
+    welcomeText.setString("What we read today?");
 
     window.draw(welcomeText);
     setTitle(window);
-
 
 
 }
@@ -616,9 +614,66 @@ int main(int argc, char const** argv){
             logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindow(window); 
             window.draw(logo_checkout); 
-          
-        }
+            //load JSON into this vector 
+           // std::vector<string> rects;   
+            //Examples 
+           // rects.push_back("Title: Odyssey     Author: Homer");  
+            std::string line; 
+            std::ifstream file; 
+            std::list<sf::Text> textList; 
+            sf::Text text; 
+            text.setFont(outFont);
+            text.setCharacterSize(40); 
+            text.setFillColor(sf::Color::Black); 
+            //TODO: Need to work on Database.json 
+            file.open("test.txt"); //a test file
+            if (file.is_open())
+            {
+                while (std::getline(file, line))
+                {
+                    //Getting every line of the .txt file and putting it in the 'line' string
+                    text.setString(line);
+                    textList.push_back(text);
+                }
+            }
 
+            float i = 0;
+            for (std::list<sf::Text>::iterator it = textList.begin(); it != textList.end(); ++it)
+            {
+                sf::Text& text = *it;
+                sf::FloatRect boundings = text.getLocalBounds();
+                text.setPosition(100, 400+i * (boundings.height + 5));
+                ++i;
+                window.draw(text); 
+                //draw or something here
+            }
+
+
+          /*  rects.push_back("Title: Example2    Author: Example2");
+            unsigned int width = 1000;  
+            unsigned int height = 500;
+
+            sf::Event event; 
+            while (window.pollEvent(event)) {
+                switch (event.type)
+                {
+                }
+            }
+        
+            for (unsigned int i = 0; i < rects.size(); i++)
+            {  
+                 
+                sf::Text BookList;
+                BookList.setFont(outFont);
+                BookList.setCharacterSize(40);
+                BookList.setFillColor(sf::Color::Black);
+                BookList.setString(" "+ rects[i]+"\n");
+                BookList.setPosition(sf::Vector2f(width, height)); 
+                window.draw(BookList); 
+             
+            } */
+           
+        }
         window.display();
     }
 
