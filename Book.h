@@ -12,21 +12,26 @@ struct Book {
     string isbn;
     string author;
     string year;
+    string name;
     bool availability;
     string rating;
     map<string, string> bookRatings;
 
     Book();
     Book(string _isbn);
-    Book(string _isbn, string name, string _author, string _year);
+    Book(string _isbn, string _name, string _author, string _year);
 
     void add_review(string username, string review);
 
-    static map<string, Book> getBookCollection();
+    static void addBook(string _isbn, string _name, string _author, string _year);
+    static void removeBook(string _isbn);
+    static vector<Book> getBookCollection();
+    static vector<Book> searchBooks(string query);
 };
 
 Book::Book() {
     author = "";
+    name = "";
     isbn = "-1";
     availability = false;
     year = "";
@@ -38,6 +43,7 @@ Book::Book(string _isbn) {
         author = data["books"][_isbn]["author"].asString();
         isbn = _isbn;
         availability = data["books"][_isbn]["available"].asBool();
+        name = data["books"][_isbn]["name"].asString();
         year = data["books"][_isbn]["year"].asString();
         rating = data["books"][_isbn]["rating"];
         for (auto const& rating : data["books"][_isbn]["ratings"]) {
@@ -46,15 +52,17 @@ Book::Book(string _isbn) {
     }
     else {
         author = "";
+        name = "";
         isbn = "-1";
         availability = false;
         year = "";
         rating = "Unrated";
     }
 }
-Book::Book(string _isbn, string name, string _author, string _year) {
+Book::Book(string _isbn, string _name, string _author, string _year) {
     isbn = _isbn;
     author = _author;
+    name = _name;
     availability = true;
     year = _year;
     rating = "Unrated";
@@ -72,22 +80,6 @@ Book::Book(string _isbn, string name, string _author, string _year) {
     data["books"][_isbn] = book;
     writeData(data);
 }
-
-//Since we are preStoring Books onto the database...
-//ALL BOOKS NEED TO BE STORED IN THE VECTOR. READ THE DATABASE AND CREATE BOOK OBJECTS
-vector<Book> Book::getBookCollection() {
-
-    Json::Value data = readData();					//Store JSON data and make it accessible
-    vector<Book> books;
-
-    //Store all books from the "JSON database" into a vector for easier access. 
-    for (auto const& id : data["books"].getMemberNames()) {
-        if (id != "-1")
-            books.push_back(Book(id));
-    }
-    return books;
-}
-
 
 //add review parameter
 void Book::add_review(string username, string review) {
@@ -118,5 +110,41 @@ void Book::add_review(string username, string review) {
     writeData(data);
     this->rating = rating;
     this->bookRatings[username] = review;
+}
+
+void Book::addBook(string _isbn, string _name, string _author, string _year) {
+    Book(_isbn, _name, _author, _year);
+}
+
+void Book::removeBook(string _isbn) {
+    Json::Value data = readData();
+    data["books"].removeMember(_isbn);
+    writeData(data);
+}
+
+//Since we are preStoring Books onto the database...
+//ALL BOOKS NEED TO BE STORED IN THE VECTOR. READ THE DATABASE AND CREATE BOOK OBJECTS
+vector<Book> Book::getBookCollection() {
+
+    Json::Value data = readData();					//Store JSON data and make it accessible
+    vector<Book> books;
+
+    //Store all books from the "JSON database" into a vector for easier access. 
+    for (auto const& id : data["books"].getMemberNames()) {
+        if (id != "-1")
+            books.push_back(Book(id));
+    }
+    return books;
+}
+
+vector<Book> Book::searchBooks(string query) {
+    vector<Book> results;
+    for (Book book : getBookCollection()) {
+        if (book.name.find(query) != string::npos) {
+            results.push_back(book);
+        }
+    }
+
+    return results;
 }
 
