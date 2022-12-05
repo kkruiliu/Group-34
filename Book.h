@@ -47,7 +47,7 @@ Book::Book(string _isbn) {
         year = data["books"][_isbn]["year"].asString();
         rating = data["books"][_isbn]["rating"];
         for (auto const& rating : data["books"][_isbn]["ratings"]) {
-            bookRatigns[rating] = data["books"][_isbn]["ratings"][rating];
+            bookRatings[rating] = data["books"][_isbn]["ratings"][rating];
         }
     }
     else {
