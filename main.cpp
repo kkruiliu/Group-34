@@ -1033,7 +1033,7 @@ int main(int argc, char const** argv) {
             }
 
             if (isReturnDone) {
-                User(returnBook());
+                control.activeUser.returnBook();
                 text.setString("Successfully returned the book, Have a great day!");
             }
 
