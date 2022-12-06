@@ -54,10 +54,17 @@ void setTitle(sf::RenderWindow& window) {
     title.setString("Books Without Boundaries");
     title.setCharacterSize(60);
 
+    //Draw title text
+    sf::Texture texture1 = loadTexture("Title.png");
+    sf::Sprite BWBUF(texture1);
+    BWBUF.setPosition(0, 0);
+    BWBUF.scale(sf::Vector2f(1.00f, 1.00f));
+    window.draw(BWBUF);
+
     title.setFillColor(sf::Color(128, 0, 32));
     title.setPosition(250, 35);
 
-    window.draw(title);
+   // window.draw(title);
     
 }
 
@@ -263,7 +270,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     checkOutBox.setFillColor(sf::Color::White);
     checkOutBox.setOutlineThickness(3.f);
     checkOutBox.setOutlineColor(sf::Color(90, 90, 90));
-    checkOutBox.setPosition(350, 425);
+    checkOutBox.setPosition(50, 425);
 
     window.draw(welcomeText);
     window.draw(checkOutBox);
@@ -388,10 +395,17 @@ int main(int argc, char const** argv){
     string errorMessage;
 
 /* MAIN WINDOW TEXTURES AND FONTS*/
-    sf::Texture texture = loadTexture("BWB logo.png");
+    /*sf::Texture texture = loadTexture("BWB logo.png");
     sf::Sprite logo(texture);
     logo.setPosition(690, 170);
-    logo.scale(sf::Vector2f(0.75f, 0.75f));
+    logo.scale(sf::Vector2f(0.75f, 0.75f));*/
+
+    //Draw Background
+    sf::Texture texture2 = loadTexture("background.png");
+    sf::Sprite background(texture2);
+    background.setPosition(0, 163);
+    background.scale(sf::Vector2f(1.00f, 1.00f));
+    
 
     //username and password text creation
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
@@ -674,12 +688,13 @@ int main(int argc, char const** argv){
             userText.setPosition(sf::Vector2f(905, 647));
             passText.setPosition(sf::Vector2f(905, 747));
 
+            window.draw(background);
             LoadMainWindow(window, usernameBox, passwordBox);
             userText.drawTo(window);
             passText.drawTo(window);
             createAcc.drawTo(window);
             loginB.drawTo(window);
-            window.draw(logo);
+            //window.draw(logo);
 
             posB = { 650, 970 };
 
@@ -743,25 +758,35 @@ int main(int argc, char const** argv){
             window.draw(logo_login);
             signOut.drawTo(window);
             RentBook.drawTo(window); 
-            CheckHistroy.drawTo(window);  
+            CheckHistroy.drawTo(window); 
         }
 
 
-        if (checkOutBook) {           
-            sf::Texture texture_checkout = loadTexture("UF.png");
+        if (checkOutBook) {
+            //First Image being loaded...
+            sf::Texture texture_checkout = loadTexture("Library.jfif");
             sf::Sprite logo_checkout(texture_checkout);
-            logo_checkout.setPosition(1530, 170);
+            //Second Imagebeing loaded...
+            sf::Texture texture_checkout2 = loadTexture("UFBWB.png");
+            sf::Sprite BWBUF(texture_checkout2);
+
+            //First Image POS
+            logo_checkout.setPosition(1400, 160);
             logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
-            LoadCheckOutWindow(window); 
+            //Second Image POS
+            BWBUF.setPosition(1420, -170);
+            BWBUF.scale(sf::Vector2f(1.00f, 1.00f));
+
+            LoadCheckOutWindow(window);
             window.draw(logo_checkout);
+            window.draw(BWBUF);
             back.drawTo(window);
-         
         }
 
         if (ViewHistroy) {
             sf::Texture texture_checkoutHis = loadTexture("UF.png");
             sf::Sprite logo_checkoutHis(texture_checkoutHis);
-            logo_checkoutHis.setPosition(1530, 170);
+            logo_checkoutHis.setPosition(1430, 170);
             logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindowHis(window,control);
             window.draw(logo_checkoutHis);
