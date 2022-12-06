@@ -94,7 +94,7 @@ bool User::checkoutBook(string isbn) {
 
 	Json::Value data = readData();
 	
-	if (data["books"][isbn]["available"].asBool()) {
+	if (current_checkout == "-1" && data["books"][isbn]["available"].asBool()) {
 		current_checkout = isbn;
 
 		data["users"][username]["current_checkout"] = isbn;
