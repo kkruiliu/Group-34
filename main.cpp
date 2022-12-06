@@ -10,6 +10,7 @@
 
 using namespace std;
 
+//Load the current font being used
 sf::Font loadFont(string file) {
     sf::Font font;
     file = "Front_End/" + file;
@@ -22,6 +23,7 @@ sf::Font loadFont(string file) {
     return font;
 }
 
+//Load the current image being used
 sf::Texture loadTexture(string file) {
     sf::Texture texture;
     file = "Front_End/" + file;
@@ -42,8 +44,6 @@ void setTitle(sf::RenderWindow& window) {
     titleBar.setOutlineColor(sf::Color(90, 90, 90));
     titleBar.setPosition(0, 0);
     window.draw(titleBar);
-
-    //Draw main title
 
     sf::Font font = loadFont("Montserrat-Bold.ttf");
 
@@ -72,11 +72,9 @@ void setTitle(sf::RenderWindow& window) {
 
     title.setFillColor(sf::Color(128, 0, 32));
     title.setPosition(250, 35);
-
-    // window.draw(title);
-
 }
 
+//Draw the main window login box
 void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
     sf::RectangleShape loginBox(sf::Vector2f(500, 350));
     loginBox.setFillColor(sf::Color(200, 200, 200));
@@ -122,6 +120,7 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
 }
 
+//Draw the create account box for inputs
 void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox,
     sf::RectangleShape& passwordVeriBox) {
     sf::RectangleShape loginBox(sf::Vector2f(500, 400));
@@ -151,7 +150,6 @@ void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
 
     sf::Font upFont = loadFont("times new roman.ttf");
 
-    //Draw username string
     sf::Text username;
 
     username.setFont(upFont);
@@ -182,6 +180,7 @@ void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
     window.draw(passwordVeri);
 }
 
+//Show a list of all the available books in the database 
 void ShowBooks(sf::RenderWindow& window) {
     Book currBook;
 
@@ -231,6 +230,7 @@ void ShowBooks(sf::RenderWindow& window) {
     }
 }
 
+//Load main window 
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
 
     setTitle(window);
@@ -238,6 +238,7 @@ void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, s
     setLoginBox(window, usernameBox, passwordBox);
 }
 
+//Load create account window
 void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox,
     sf::RectangleShape& passwordVeriBox) {
 
@@ -247,6 +248,7 @@ void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameB
 
 }
 
+//Load main login window
 void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
     setTitle(window);
 
@@ -263,6 +265,7 @@ void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
     window.draw(welcomeText);
 }
 
+//Load checkout window with list of available books
 void LoadCheckOutWindow(sf::RenderWindow& window) {
     setTitle(window);
 
@@ -288,6 +291,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     ShowBooks(window);
 }
 
+//Load checkout history window
 void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
     setTitle(window);
 
@@ -303,6 +307,7 @@ void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
     window.draw(welcomeText);
 }
 
+//Load return book window
 void LoadReturnWin(sf::RenderWindow& window, AccessManager& control) {
     setTitle(window);
 
@@ -318,6 +323,8 @@ void LoadReturnWin(sf::RenderWindow& window, AccessManager& control) {
 
     window.draw(welcomeText);
 }
+
+//Load main checkout book window
 void LoadActiveCheckout(sf::RenderWindow& window, sf::RectangleShape& checkOutBox) {
     setTitle(window);
 
@@ -348,12 +355,13 @@ bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& 
 
     sf::Font font = loadFont("times new roman.ttf");
 
-
+    //Send error if passwords do not match
     if (password != passwordVeri) {
         errorMessage = "Passwords do not match. Please try again.";
         return false;
     }
 
+    //If passwords match verify that everything meets the requirement
     else {
         string signUpMessage = control.SignUp(username, password);
         if (signUpMessage != "Successfully created account!") {
@@ -384,6 +392,7 @@ void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, 
     errorBox.setOutlineThickness(3.f);
     errorBox.setPosition(posB);
 
+    //error message being outputted
     sf::Text errorMessage;
     errorMessage.setFont(outFont);
     errorMessage.setCharacterSize(20);
@@ -424,9 +433,10 @@ int main(int argc, char const** argv) {
     bool setVerification; //checks whether verification box should be displayed
     bool setVerificationLog = false; //checks whether login was successful
     bool accCreated = false; //checks whether an account was properly created
-    bool enteredClickCA = false;
-    bool enteredClickL = false;
-    bool loggedIn;
+    bool enteredClickCA = false; //checks if entered create account page
+    bool enteredClickL = false; //checks if entered login page
+    bool loggedIn; //checks if user is logged in
+
     //Booleans for checkout
     bool checkIfCheckedOut = false;
     bool verifyCheck = false;
@@ -447,12 +457,7 @@ int main(int argc, char const** argv) {
     string errorMessage;
 
     /* MAIN WINDOW TEXTURES AND FONTS*/
-        /*sf::Texture texture = loadTexture("BWB logo.png");
-        sf::Sprite logo(texture);
-        logo.setPosition(690, 170);
-        logo.scale(sf::Vector2f(0.75f, 0.75f));*/
-
-        //Draw Background
+    //Draw Background
     sf::Texture texture2 = loadTexture("background.png");
     sf::Sprite background(texture2);
     background.setPosition(0, 163);
@@ -529,6 +534,7 @@ int main(int argc, char const** argv) {
     checkOutB.setPosition(sf::Vector2f(725, 550));
     checkOutB.setClicked(false);
 
+    //Button to return a book
     Button returnAbook("Return A Book", { 450, 50 }, 40);
     returnAbook.setFont(outFont);
     returnAbook.setPosition(sf::Vector2f(800, 500));
@@ -584,11 +590,12 @@ int main(int argc, char const** argv) {
 
         while (window.pollEvent(event)) {
             switch (event.type) {
-                // "close requested" event: we close the window
+
+            // "close requested" event: we close the window
             case sf::Event::Closed:
                 window.close();
 
-                //check if username or password is being typed
+            //check if username or password is being typed
             case sf::Event::TextEntered:
                 userText.typedOn(event);
                 passText.typedOn(event);
@@ -596,6 +603,7 @@ int main(int argc, char const** argv) {
                 checkText.typedOn(event);
                 break;
 
+            //Change color of button when user hovers over it
             case sf::Event::MouseMoved:
                 if (mainWinOpen) {
                     if (createAcc.isMouseTouching(window)) {
@@ -718,6 +726,7 @@ int main(int argc, char const** argv) {
                     }
                 }
 
+            //Actions for when user clicks on buttons
             case sf::Event::MouseButtonPressed:
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     if (mainWinOpen) {
@@ -831,7 +840,7 @@ int main(int argc, char const** argv) {
 
         window.clear(sf::Color(220, 220, 220));
 
-
+        //Open login window during successful logins
         if (loginB.getClicked()) {
             enteredClickL = true;
             setVerificationLog = VerifyLogin(window, control, userText, passText);
@@ -845,6 +854,7 @@ int main(int argc, char const** argv) {
             loginB.setClicked(false);
         }
 
+        //Draw main window when open
         if (mainWinOpen) {
             userText.setPosition(sf::Vector2f(905, 647));
             passText.setPosition(sf::Vector2f(905, 747));
@@ -864,6 +874,7 @@ int main(int argc, char const** argv) {
             }
         }
 
+        //Draw create account window when open
         if (createAccWinOpen) {
             enteredClickL = false;
 
@@ -881,7 +892,7 @@ int main(int argc, char const** argv) {
             if (createAcc2.getClicked()) {
                 enteredClickCA = true;
 
-                accCreated = VerifyCreateAcc(window, control, userText, passText, passVeriText, errorMessage);
+                accCreated = VerifyCreateAcc(window, control, userText, passText, passVeriText, errorMessage); //verify if account successfully created
 
                 if (!accCreated) {
                     setVerification = false;
@@ -910,10 +921,8 @@ int main(int argc, char const** argv) {
 
         }
 
+        //Draw login window
         if (loginWinOpen) {
-            //sf::Texture texture_login = loadTexture("UF.png"); 
-            //sf::Sprite logo_login(texture_login); 
-
             sf::Texture texture_login = loadTexture("LoginWindow.png");
             sf::Sprite logo_login(texture_login);
             logo_login.setPosition(0, 163);
@@ -928,7 +937,7 @@ int main(int argc, char const** argv) {
             returnAbook.drawTo(window); 
         }
 
-
+        //Draw checkout window
         if (checkOutBook) {
             //First Image being loaded...
             sf::Texture texture_checkout = loadTexture("Library.png");
@@ -941,8 +950,11 @@ int main(int argc, char const** argv) {
             window.draw(logo_checkout);
             back.drawTo(window);
             checkOut.drawTo(window);
+
+            checkIfCheckedOut = false;
         }
 
+        //Draw view history window
         if (ViewHistroy) {
             sf::Texture texture_checkoutHis = loadTexture("UF.png");
             sf::Sprite logo_checkoutHis(texture_checkoutHis);
@@ -964,6 +976,7 @@ int main(int argc, char const** argv) {
 
             vector<string> dispHis = control.activeUser.getCheckoutHistory();
 
+            //Display list of book checkout history
             for (int i = 0; i < dispHis.size(); i++) {
                 userHistory.setString(to_string(i + 1) + " : " + Book(dispHis[i]).name + "      " + Book(dispHis[i]).author);
                 userHistory.setPosition(sf::Vector2f(400, y_pos));
@@ -973,11 +986,10 @@ int main(int argc, char const** argv) {
 
                 prevBook = userHistory.getGlobalBounds().height;
                 y_pos += 15 + prevBook;
-
             }
-
         }
 
+        //Draw actual checkout window when user wants to checkout a book
         if (activeCheckout) {
             LoadActiveCheckout(window, checkOutBox);
             checkText.drawTo(window);
@@ -1006,15 +1018,27 @@ int main(int argc, char const** argv) {
 
             if (checkIfCheckedOut && verifyCheck) {
                 DrawErrorMessage(window, posB, true, "Book successfully checked out!");
+                checkText.clear();
             }
 
-            else if (checkIfCheckedOut && !verifyCheck) {
+            else if (checkIfCheckedOut && control.activeUser.getCurrentCheckout() != "-1") {
+                DrawErrorMessage(window, posB, false, "You already have a book checked out.");
+                checkText.clear();
+            }
+
+            else if (checkIfCheckedOut && !verifyCheck && control.activeUser.getCurrentCheckout() == "-1") {
                 DrawErrorMessage(window, posB, false, "This book is not available.");
+                checkText.clear();
             }
 
         }
 
+<<<<<<< Updated upstream
         if (ReturnWin) {
+=======
+        //Draw return book window
+        if(ReturnWin) {
+>>>>>>> Stashed changes
             sf::Texture texture_return = loadTexture("Library.png");
             sf::Sprite logo_return(texture_return);
             sf::Text text;
@@ -1035,9 +1059,16 @@ int main(int argc, char const** argv) {
                 text.setString("Your current checkout book: \n " + Book(getIsbn).name);
              
             }
+<<<<<<< Updated upstream
             if (getIsbn == "-1"&&!isReturnDone&&!hasbeenReturn) {
                 text.setString("You don't have current checkout record");
             } 
+=======
+
+            else {
+                text.setString("You don't have anything currently checked out.");
+            }
+>>>>>>> Stashed changes
 
             if (!hasbeenReturn && isReturnDone ) {
                 text.setString("        ");
@@ -1057,10 +1088,9 @@ int main(int argc, char const** argv) {
            
             window.draw(logo_return);
             back.drawTo(window);
-
         }
 
-        window.display();
+        window.display(); //Display window
     }
 
     return 0;
