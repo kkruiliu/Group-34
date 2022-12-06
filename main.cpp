@@ -275,7 +275,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
 
     welcomeText.setFont(font);
     welcomeText.setCharacterSize(45);
-    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setPosition(sf::Vector2f(50, 200));
     welcomeText.setFillColor(sf::Color::Blue);
     welcomeText.setString("Book Checkout List");
 
@@ -300,9 +300,9 @@ void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
 
     welcomeText.setFont(font);
     welcomeText.setCharacterSize(45);
-    welcomeText.setPosition(sf::Vector2f(10, 200));
-    welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString(control.activeUser.getUsername() + "'s checkout history");
+    welcomeText.setPosition(sf::Vector2f(30, 200));
+    welcomeText.setFillColor(sf::Color::Black);
+    welcomeText.setString(control.activeUser.getUsername() + "'s Checkout History");
 
     window.draw(welcomeText);
 }
@@ -316,8 +316,8 @@ void LoadReturnWin(sf::RenderWindow& window, AccessManager& control) {
 
     welcomeText.setFont(font);
     welcomeText.setCharacterSize(45);
-    welcomeText.setPosition(sf::Vector2f(10, 200));
-    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setPosition(sf::Vector2f(50, 200));
+    welcomeText.setFillColor(sf::Color::Black);
 
     welcomeText.setString("Return A Book");
 
@@ -512,11 +512,11 @@ int main(int argc, char const** argv) {
     signOut.setFont(outFont);
     signOut.setPosition(sf::Vector2f(15, 300));
 
-    Button RentBook("Check out a book now", { 400, 70 }, 40);
+    Button RentBook("Check out book", { 400, 70 }, 40);
     RentBook.setFont(outFont);
     RentBook.setPosition(sf::Vector2f(400, 700));
 
-    Button CheckHistroy("View your checkout history", { 500, 70 }, 40);
+    Button CheckHistroy("View checkout history", { 500, 70 }, 40);
     CheckHistroy.setFont(outFont);
     CheckHistroy.setPosition(sf::Vector2f(1200, 700));
 
@@ -956,10 +956,10 @@ int main(int argc, char const** argv) {
 
         //Draw view history window
         if (ViewHistroy) {
-            sf::Texture texture_checkoutHis = loadTexture("UF.png");
-            sf::Sprite logo_checkoutHis(texture_checkoutHis);
-            logo_checkoutHis.setPosition(1430, 170);
-            logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
+            sf::Texture texture_history = loadTexture("checkoutHistory.png");
+            sf::Sprite checkoutBackground(texture_history);
+            checkoutBackground.setPosition(0, 163);
+            checkoutBackground.scale(sf::Vector2f(1.00f, 1.00f));
 
             float y_pos = 450;
             float prevBook = 0;
@@ -970,8 +970,8 @@ int main(int argc, char const** argv) {
             userHistory.setFillColor(sf::Color::Black);
             userHistory.setPosition(720, 640);
 
+            window.draw(checkoutBackground);
             LoadCheckOutWindowHis(window, control);
-            window.draw(logo_checkoutHis);
             back.drawTo(window);
 
             vector<string> dispHis = control.activeUser.getCheckoutHistory();
@@ -1033,19 +1033,16 @@ int main(int argc, char const** argv) {
 
         }
 
-<<<<<<< Updated upstream
-        if (ReturnWin) {
-=======
         //Draw return book window
         if(ReturnWin) {
->>>>>>> Stashed changes
+
             sf::Texture texture_return = loadTexture("Library.png");
             sf::Sprite logo_return(texture_return);
             sf::Text text;
             text.setFont(outFont);
             text.setCharacterSize(35);
             text.setFillColor(sf::Color::Black);
-            text.setPosition(200, 300);
+            text.setPosition(50, 300);
 
 
 
@@ -1059,16 +1056,16 @@ int main(int argc, char const** argv) {
                 text.setString("Your current checkout book: \n " + Book(getIsbn).name);
              
             }
-<<<<<<< Updated upstream
-            if (getIsbn == "-1"&&!isReturnDone&&!hasbeenReturn) {
+
+            /*if (getIsbn == "-1"&&!isReturnDone&&!hasbeenReturn) {
                 text.setString("You don't have current checkout record");
-            } 
-=======
+            }*/ 
+
 
             else {
                 text.setString("You don't have anything currently checked out.");
             }
->>>>>>> Stashed changes
+
 
             if (!hasbeenReturn && isReturnDone ) {
                 text.setString("        ");
