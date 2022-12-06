@@ -72,8 +72,8 @@ void setTitle(sf::RenderWindow& window) {
     title.setFillColor(sf::Color(128, 0, 32));
     title.setPosition(250, 35);
 
-   // window.draw(title);
-    
+    // window.draw(title);
+
 }
 
 void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
@@ -86,7 +86,7 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
     usernameBox.setFillColor(sf::Color::White);
     usernameBox.setOutlineThickness(2.f);
-    usernameBox.setOutlineColor(sf::Color(90, 90, 90)); 
+    usernameBox.setOutlineColor(sf::Color(90, 90, 90));
     usernameBox.setPosition(900, 640);
     window.draw(usernameBox);
 
@@ -183,11 +183,11 @@ void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
 
 void ShowBooks(sf::RenderWindow& window) {
     Book currBook;
-    
+
     sf::Font outFont = loadFont("times new roman.ttf");
 
     bool available;
-    sf::Text BookList;  
+    sf::Text BookList;
     sf::Text BookData;
     sf::Text TextAvailability;
     BookList.setFont(outFont);
@@ -204,7 +204,7 @@ void ShowBooks(sf::RenderWindow& window) {
 
     for (int i = 0; i < bookDisplay.size(); i++) {
         available = bookDisplay[i].availability;
-      
+
         BookList.setString(to_string(i + 1) + " : " + bookDisplay[i].name + " - " + bookDisplay[i].author + "\n     Year: " + bookDisplay[i].year + "  | Rating: " + bookDisplay[i].rating);
 
         if (available) {
@@ -215,9 +215,9 @@ void ShowBooks(sf::RenderWindow& window) {
         else {
             TextAvailability.setString("Not Available");
             TextAvailability.setFillColor(sf::Color::Red);
-                    
+
         }
-      
+
 
         BookList.setPosition(sf::Vector2f(100, y_pos));
         TextAvailability.setPosition(sf::Vector2f((110 + BookList.getGlobalBounds().width), y_pos));
@@ -297,11 +297,26 @@ void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
     welcomeText.setCharacterSize(45);
     welcomeText.setPosition(sf::Vector2f(10, 200));
     welcomeText.setFillColor(sf::Color::Blue);
-    welcomeText.setString(control.activeUser.getUsername()+ "'s checkout history");
+    welcomeText.setString(control.activeUser.getUsername() + "'s checkout history");
 
     window.draw(welcomeText);
 }
 
+void LoadReturnWin(sf::RenderWindow& window, AccessManager& control) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+
+    welcomeText.setString("Return A Book");
+
+    window.draw(welcomeText);
+}
 void LoadActiveCheckout(sf::RenderWindow& window, sf::RectangleShape& checkOutBox) {
     setTitle(window);
 
@@ -347,7 +362,7 @@ bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& 
 
         else
             return true;
-        
+
     }
 }
 
@@ -376,7 +391,7 @@ void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, 
     //put message in the middle of the error box
     float x = (posB.x + errorBox.getGlobalBounds().width / 2) - (errorMessage.getGlobalBounds().width / 2);
     float y = -10 + (posB.y + errorBox.getGlobalBounds().height / 2) - (errorMessage.getGlobalBounds().height / 2);
-    errorMessage.setPosition(x,y);
+    errorMessage.setPosition(x, y);
 
     //error message box
     if (!status) {
@@ -386,7 +401,7 @@ void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, 
 
     //confirmation message
     else {
-        errorBox.setFillColor(sf::Color(144,238, 144));
+        errorBox.setFillColor(sf::Color(144, 238, 144));
         errorBox.setOutlineColor(sf::Color::Green);
     }
 
@@ -394,7 +409,7 @@ void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, 
     window.draw(errorMessage);
 }
 
-int main(int argc, char const** argv){
+int main(int argc, char const** argv) {
     AccessManager control;
 
     //booleans to check which window to load
@@ -408,14 +423,16 @@ int main(int argc, char const** argv){
     bool setVerification; //checks whether verification box should be displayed
     bool setVerificationLog = false; //checks whether login was successful
     bool accCreated = false; //checks whether an account was properly created
-    bool enteredClickCA = false; 
+    bool enteredClickCA = false;
     bool enteredClickL = false;
     bool loggedIn;
     //Booleans for checkout
     bool checkIfCheckedOut = false;
     bool verifyCheck = false;
+    bool ReturnWin = false; 
+    bool isReturnDone = false; 
 
-    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
+    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries");
 
     //user input font
     sf::Text output;
@@ -428,18 +445,18 @@ int main(int argc, char const** argv){
     //string for any error or confirmation messages
     string errorMessage;
 
-/* MAIN WINDOW TEXTURES AND FONTS*/
-    /*sf::Texture texture = loadTexture("BWB logo.png");
-    sf::Sprite logo(texture);
-    logo.setPosition(690, 170);
-    logo.scale(sf::Vector2f(0.75f, 0.75f));*/
+    /* MAIN WINDOW TEXTURES AND FONTS*/
+        /*sf::Texture texture = loadTexture("BWB logo.png");
+        sf::Sprite logo(texture);
+        logo.setPosition(690, 170);
+        logo.scale(sf::Vector2f(0.75f, 0.75f));*/
 
-    //Draw Background
+        //Draw Background
     sf::Texture texture2 = loadTexture("background.png");
     sf::Sprite background(texture2);
     background.setPosition(0, 163);
     background.scale(sf::Vector2f(1.00f, 1.00f));
-    
+
 
     //username and password text creation
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
@@ -461,7 +478,7 @@ int main(int argc, char const** argv){
     loginB.setFont(outFont);
     loginB.setPosition(sf::Vector2f(970, 840));
 
-/*CREATE ACCOUNT WINDOW TEXTURES AND FONTS*/
+    /*CREATE ACCOUNT WINDOW TEXTURES AND FONTS*/
     sf::RectangleShape passVeriBox(sf::Vector2f(275, 50));
     textBox passVeriText(false);
 
@@ -484,14 +501,14 @@ int main(int argc, char const** argv){
     requirements.setFillColor(sf::Color::Black);
     requirements.setPosition(410, 850);
 
-/*LOGIN WINDOOW TEXTURES AND FONTS*/
+    /*LOGIN WINDOOW TEXTURES AND FONTS*/
     Button signOut("Log Out", { 100, 30 }, 25);
     signOut.setFont(outFont);
     signOut.setPosition(sf::Vector2f(15, 300));
 
-    Button RentBook("Check out a book now", { 400, 70 }, 40); 
-    RentBook.setFont(outFont); 
-    RentBook.setPosition(sf::Vector2f(400, 700));  
+    Button RentBook("Check out a book now", { 400, 70 }, 40);
+    RentBook.setFont(outFont);
+    RentBook.setPosition(sf::Vector2f(400, 700));
 
     Button CheckHistroy("View your checkout history", { 500, 70 }, 40);
     CheckHistroy.setFont(outFont);
@@ -511,6 +528,14 @@ int main(int argc, char const** argv){
     checkOutB.setPosition(sf::Vector2f(725, 550));
     checkOutB.setClicked(false);
 
+    Button returnAbook("Return A Book", { 450, 50 }, 40);
+    returnAbook.setFont(outFont);
+    returnAbook.setPosition(sf::Vector2f(800, 500));
+
+    Button returnAction("Return This Book", { 400, 50 }, 40);
+    returnAction.setFont(outFont);
+    returnAction.setPosition(sf::Vector2f(500, 500));
+
     //textbox for checkout
     sf::RectangleShape checkOutBox(sf::Vector2f(75, 50));
     textBox checkText(false);
@@ -518,8 +543,8 @@ int main(int argc, char const** argv){
     checkText.setPosition(sf::Vector2f(925, 450));
 
 
-/*MAIN SFML FUNCTION WITH WINDOW*/
-    while (window.isOpen()){
+    /*MAIN SFML FUNCTION WITH WINDOW*/
+    while (window.isOpen()) {
         vector<Book> allBooks = Book::getBookCollection();
 
         sf::Event event;
@@ -556,7 +581,7 @@ int main(int argc, char const** argv){
         }
 
 
-        while (window.pollEvent(event)){
+        while (window.pollEvent(event)) {
             switch (event.type) {
                 // "close requested" event: we close the window
             case sf::Event::Closed:
@@ -569,7 +594,7 @@ int main(int argc, char const** argv){
                 passVeriText.typedOn(event);
                 checkText.typedOn(event);
                 break;
-            
+
             case sf::Event::MouseMoved:
                 if (mainWinOpen) {
                     if (createAcc.isMouseTouching(window)) {
@@ -627,6 +652,14 @@ int main(int argc, char const** argv){
                         CheckHistroy.setBgColor(sf::Color(220, 220, 220));
 
                     }
+                    if (returnAbook.isMouseTouching(window)) {
+
+                        returnAbook.setBgColor(sf::Color(200, 200, 200));
+
+                    }
+                    else {
+                        returnAbook.setBgColor(sf::Color(220, 220, 220));
+                    }
                 }
 
                 if (checkOutBook) {
@@ -657,6 +690,14 @@ int main(int argc, char const** argv){
                         back.setBgColor(sf::Color(220, 220, 220));
                     }
                 }
+                if (ReturnWin) {
+                    if (returnAction.isMouseTouching(window)) {
+                        returnAction.setBgColor(sf::Color(200, 200, 200));
+                    }
+                    else {
+                        returnAction.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
 
                 if (activeCheckout) {
                     if (back.isMouseTouching(window)) {
@@ -685,7 +726,7 @@ int main(int argc, char const** argv){
                             mainWinOpen = false;
 
                             userText.clear();
-                            passText.clear(); 
+                            passText.clear();
                             passVeriText.clear();
 
                             userText.setPosition(sf::Vector2f(905, 447));
@@ -724,14 +765,19 @@ int main(int argc, char const** argv){
                         }
                         if (RentBook.isMouseTouching(window)) {
                             loginWinOpen = false;
-                            checkOutBook = true; 
+                            checkOutBook = true;
                             RentBook.setClicked(true);
                         }
                         if (CheckHistroy.isMouseTouching(window)) {
-                            loginWinOpen = false; 
-                            ViewHistroy = true; 
-                            CheckHistroy.setClicked(true); 
+                            loginWinOpen = false;
+                            ViewHistroy = true;
+                            CheckHistroy.setClicked(true);
 
+                        }
+                        if (returnAbook.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            ReturnWin = true;
+                            returnAbook.setClicked(true);
                         }
                     }
 
@@ -753,18 +799,29 @@ int main(int argc, char const** argv){
                             ViewHistroy = false;
                         }
                     }
-
-                    if (activeCheckout) {
+                    if (ReturnWin) {
                         if (back.isMouseTouching(window)) {
-                            checkOutBook = true;
-                            activeCheckout = false;
+                            loginWinOpen = true;
+                            ReturnWin = false;
+                        }
+                        if (returnAction.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            isReturnDone = true;
+                            returnAction.setClicked(true);
                         }
 
-                        if (checkOutB.isMouseTouching(window)) {
-                            checkOutB.setClicked(true);
+                        if (activeCheckout) {
+                            if (back.isMouseTouching(window)) {
+                                checkOutBook = true;
+                                activeCheckout = false;
+                            }
+
+                            if (checkOutB.isMouseTouching(window)) {
+                                checkOutB.setClicked(true);
+                            }
                         }
+
                     }
-
                 }
             }
 
@@ -827,7 +884,7 @@ int main(int argc, char const** argv){
                 if (!accCreated) {
                     setVerification = false;
                 }
-                
+
                 else {
                     //Go back to the main window. 
                     loginWinOpen = false;
@@ -848,7 +905,7 @@ int main(int argc, char const** argv){
                     DrawErrorMessage(window, posB, false, errorMessage);
 
             }
-            
+
         }
 
         if (loginWinOpen) {
@@ -862,10 +919,11 @@ int main(int argc, char const** argv){
 
             window.draw(logo_login);
             LoadLoginWindow(window, control);
-           
+
             signOut.drawTo(window);
-            RentBook.drawTo(window); 
-            CheckHistroy.drawTo(window); 
+            RentBook.drawTo(window);
+            CheckHistroy.drawTo(window);
+            returnAbook.drawTo(window); 
         }
 
 
@@ -901,21 +959,21 @@ int main(int argc, char const** argv){
             LoadCheckOutWindowHis(window, control);
             window.draw(logo_checkoutHis);
             back.drawTo(window);
-            
+
             vector<string> dispHis = control.activeUser.getCheckoutHistory();
 
             for (int i = 0; i < dispHis.size(); i++) {
-              userHistory.setString(to_string(i + 1) + " : "+ Book(dispHis[i]).name+"      " + Book(dispHis[i]).author);
-              userHistory.setPosition(sf::Vector2f(400, y_pos));
+                userHistory.setString(to_string(i + 1) + " : " + Book(dispHis[i]).name + "      " + Book(dispHis[i]).author);
+                userHistory.setPosition(sf::Vector2f(400, y_pos));
 
 
-              window.draw(userHistory);
+                window.draw(userHistory);
 
-              prevBook = userHistory.getGlobalBounds().height;
-              y_pos += 15 + prevBook;
+                prevBook = userHistory.getGlobalBounds().height;
+                y_pos += 15 + prevBook;
 
             }
-         
+
         }
 
         if (activeCheckout) {
@@ -928,7 +986,7 @@ int main(int argc, char const** argv){
 
             if (checkOutB.getClicked()) {
                 string bookChecked = checkText.getText();
-                
+
                 int bookNum = stoi(bookChecked);
 
                 checkIfCheckedOut = true;
@@ -941,7 +999,7 @@ int main(int argc, char const** argv){
                     verifyCheck = false;
                 }
 
-                checkOutB.setClicked(false); 
+                checkOutB.setClicked(false);
             }
 
             if (checkIfCheckedOut && verifyCheck) {
@@ -951,6 +1009,39 @@ int main(int argc, char const** argv){
             else if (checkIfCheckedOut && !verifyCheck) {
                 DrawErrorMessage(window, posB, false, "This book is not available.");
             }
+
+        }
+
+        if(ReturnWin) {
+            sf::Texture texture_return = loadTexture("Library.png");
+            sf::Sprite logo_return(texture_return);
+            sf::Text text;
+            text.setFont(outFont);
+            text.setCharacterSize(35);
+            text.setFillColor(sf::Color::Black);
+            text.setPosition(200, 300);
+
+            string getIsbn = control.activeUser.getCurrentCheckout();
+            logo_return.setPosition(1400, 160);
+            logo_return.scale(sf::Vector2f(1.00f, 1.00f));
+
+            if (getIsbn != "-1") {
+                text.setString("Your current checkout book: \n " + Book(getIsbn).name);
+            }
+            else {
+                text.setString("You don't have current checkout record");
+            }
+
+            if (isReturnDone) {
+                User(returnBook());
+                text.setString("Successfully returned the book, Have a great day!");
+            }
+
+            LoadReturnWin(window, control);
+            returnAction.drawTo(window);
+            window.draw(text);
+            window.draw(logo_return);
+            back.drawTo(window);
 
         }
 
