@@ -799,6 +799,7 @@ int main(int argc, char const** argv) {
                             ViewHistroy = false;
                         }
                     }
+
                     if (ReturnWin) {
                         if (back.isMouseTouching(window)) {
                             loginWinOpen = true;
@@ -809,18 +810,17 @@ int main(int argc, char const** argv) {
                             isReturnDone = true;
                             returnAction.setClicked(true);
                         }
+                    }
 
-                        if (activeCheckout) {
-                            if (back.isMouseTouching(window)) {
-                                checkOutBook = true;
-                                activeCheckout = false;
-                            }
-
-                            if (checkOutB.isMouseTouching(window)) {
-                                checkOutB.setClicked(true);
-                            }
+                    if (activeCheckout) {
+                        if (back.isMouseTouching(window)) {
+                            checkOutBook = true;
+                            activeCheckout = false;
                         }
 
+                        if (checkOutB.isMouseTouching(window)) {
+                            checkOutB.setClicked(true);
+                        }
                     }
                 }
             }
