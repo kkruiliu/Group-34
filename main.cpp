@@ -1,9 +1,11 @@
 #include "AccessManager.h"
+#include "Book.h"
 #include "Button.h"
 #include "textBox.h"
 #include "User.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <list> 
 
 using namespace std;
 
@@ -52,11 +54,26 @@ void setTitle(sf::RenderWindow& window) {
     title.setString("Books Without Boundaries");
     title.setCharacterSize(60);
 
+    //Draw Books Without Boundaries title
+    sf::Texture texture1 = loadTexture("Title.png");
+    sf::Sprite bwbTitle(texture1);
+    bwbTitle.setPosition(0, 0);
+    bwbTitle.scale(sf::Vector2f(1.00f, 1.00f));
+    window.draw(bwbTitle);
+
+    //UFBWB LOGO
+    sf::Texture texture2 = loadTexture("BWBUFLogo.png");
+    sf::Sprite BWBUF(texture2);
+    //Second Image POS
+    BWBUF.setPosition(1600, 80);
+    BWBUF.scale(sf::Vector2f(1.00f, 1.00f));
+    window.draw(BWBUF);
+
     title.setFillColor(sf::Color(128, 0, 32));
     title.setPosition(250, 35);
 
-    window.draw(title);
-    
+    // window.draw(title);
+
 }
 
 void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
@@ -69,7 +86,7 @@ void setLoginBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::
 
     usernameBox.setFillColor(sf::Color::White);
     usernameBox.setOutlineThickness(2.f);
-    usernameBox.setOutlineColor(sf::Color(90, 90, 90)); 
+    usernameBox.setOutlineColor(sf::Color(90, 90, 90));
     usernameBox.setPosition(900, 640);
     window.draw(usernameBox);
 
@@ -164,6 +181,55 @@ void setCreateAccBox(sf::RenderWindow& window, sf::RectangleShape& usernameBox, 
     window.draw(passwordVeri);
 }
 
+void ShowBooks(sf::RenderWindow& window) {
+    Book currBook;
+
+    sf::Font outFont = loadFont("times new roman.ttf");
+
+    bool available;
+    sf::Text BookList;
+    sf::Text BookData;
+    sf::Text TextAvailability;
+    BookList.setFont(outFont);
+    BookList.setCharacterSize(30);
+    BookList.setFillColor(sf::Color::Black);
+
+    TextAvailability.setFont(outFont);
+    TextAvailability.setCharacterSize(30);
+
+    float y_pos = 450;
+    float prevBook = 0;
+
+    vector<Book> bookDisplay = currBook.getBookCollection();
+
+    for (int i = 0; i < bookDisplay.size(); i++) {
+        available = bookDisplay[i].availability;
+
+        BookList.setString(to_string(i + 1) + " : " + bookDisplay[i].name + " - " + bookDisplay[i].author + "\n     Year: " + bookDisplay[i].year + "  | Rating: " + bookDisplay[i].rating);
+
+        if (available) {
+            TextAvailability.setString("Available");
+            TextAvailability.setFillColor(sf::Color(0, 100, 0));
+        }
+
+        else {
+            TextAvailability.setString("Not Available");
+            TextAvailability.setFillColor(sf::Color::Red);
+
+        }
+
+
+        BookList.setPosition(sf::Vector2f(400, y_pos));
+        TextAvailability.setPosition(sf::Vector2f((410 + BookList.getGlobalBounds().width), y_pos));
+        window.draw(BookList);
+        window.draw(TextAvailability);
+
+        prevBook = BookList.getGlobalBounds().height;
+        y_pos += 15 + prevBook;
+
+    }
+}
+
 void LoadMainWindow(sf::RenderWindow& window, sf::RectangleShape& usernameBox, sf::RectangleShape& passwordBox) {
 
     setTitle(window);
@@ -180,70 +246,195 @@ void LoadCreateAccWindow(sf::RenderWindow& window, sf::RectangleShape& usernameB
 
 }
 
-void LoadLoginWindow(sf::RenderWindow& window, string username) {
+void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
     setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(30, 200));
+    welcomeText.setFillColor(sf::Color::White);
+    welcomeText.setString("Welcome, " + control.activeUser.getUsername());
+
+
+    window.draw(welcomeText);
 }
 
-void VerifyCreateAcc(sf::RenderWindow& window, AccessManager control, textBox& userText, textBox& passText,
-    textBox& passVeriText) {
+void LoadCheckOutWindow(sf::RenderWindow& window) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Font outFont = loadFont("times new roman.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString("Book Checkout List");
+
+    sf::RectangleShape checkOutBox(sf::Vector2f(1200, 600));
+    checkOutBox.setFillColor(sf::Color::White);
+    checkOutBox.setOutlineThickness(3.f);
+    checkOutBox.setOutlineColor(sf::Color(90, 90, 90));
+    checkOutBox.setPosition(50, 425);
+
+    window.draw(welcomeText);
+    window.draw(checkOutBox);
+
+    ShowBooks(window);
+}
+
+void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setString(control.activeUser.getUsername() + "'s checkout history");
+
+    window.draw(welcomeText);
+}
+
+
+void LoadReturnWin(sf::RenderWindow& window, AccessManager& control) {
+    setTitle(window);
+
+    sf::Font font = loadFont("Montserrat-Bold.ttf");
+    sf::Text welcomeText;
+
+    welcomeText.setFont(font);
+    welcomeText.setCharacterSize(45);
+    welcomeText.setPosition(sf::Vector2f(10, 200));
+    welcomeText.setFillColor(sf::Color::Blue);
+
+    welcomeText.setString("Return A Book");
+
+    window.draw(welcomeText);
+}
+
+
+bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
+    textBox& passVeriText, string& errorMessage) {
 
     string username = userText.getText();
     string password = passText.getText();
     string passwordVeri = passVeriText.getText();
 
+
     sf::Font font = loadFont("times new roman.ttf");
 
+
     if (password != passwordVeri) {
-        //error box if there is an issue
-        sf::RectangleShape errorBox(sf::Vector2f(500, 50));
-        errorBox.setFillColor(sf::Color(255, 228, 228));
-        errorBox.setOutlineThickness(3.f);
-        errorBox.setOutlineColor(sf::Color::Red);
-        errorBox.setPosition(710, 300);
-
-        sf::Text errorMessage;
-        errorMessage.setFont(font);
-        errorMessage.setString("Passwords do not match. Please try again.");
-        errorMessage.setCharacterSize(20);
-        errorMessage.setFillColor(sf::Color::Black);
-        errorMessage.setPosition(710, 300);
-
-        window.draw(errorBox);
-        window.draw(errorMessage);
-
-        cout << "What?" << endl;
-       
+        errorMessage = "Passwords do not match. Please try again.";
+        return false;
     }
 
     else {
-        cout << "Starting sign up process" << endl;
-      
-        control.SignUp(window, font, username, password);
+        string signUpMessage = control.SignUp(username, password);
+        if (signUpMessage != "Successfully created account!") {
+            errorMessage = signUpMessage;
+            return false;
+        }
+
+        else
+            return true;
+
     }
 }
 
-int main(int argc, char const** argv){
+bool VerifyLogin(sf::RenderWindow& window, AccessManager& control, textBox& username, textBox& password) {
+    string user = username.getText();
+    string pass = password.getText();
+
+    control.logIn(user, pass);
+
+    return control.loggedIn;
+}
+
+void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, string message) {
+    sf::Font outFont = loadFont("times new roman.ttf");
+
+    //error box if there is an issue
+    sf::RectangleShape errorBox(sf::Vector2f(650, 50));
+    errorBox.setOutlineThickness(3.f);
+    errorBox.setPosition(posB);
+
+    sf::Text errorMessage;
+    errorMessage.setFont(outFont);
+    errorMessage.setCharacterSize(20);
+    errorMessage.setFillColor(sf::Color::Black);
+    errorMessage.setString(message);
+    //put message in the middle of the error box
+    float x = (posB.x + errorBox.getGlobalBounds().width / 2) - (errorMessage.getGlobalBounds().width / 2);
+    float y = -10 + (posB.y + errorBox.getGlobalBounds().height / 2) - (errorMessage.getGlobalBounds().height / 2);
+    errorMessage.setPosition(x, y);
+
+    //error message box
+    if (!status) {
+        errorBox.setFillColor(sf::Color(255, 228, 228));
+        errorBox.setOutlineColor(sf::Color::Red);
+    }
+
+    //confirmation message
+    else {
+        errorBox.setFillColor(sf::Color(144, 238, 144));
+        errorBox.setOutlineColor(sf::Color::Green);
+    }
+
+    window.draw(errorBox);
+    window.draw(errorMessage);
+}
+
+int main(int argc, char const** argv) {
     AccessManager control;
 
     //booleans to check which window to load
     bool mainWinOpen = true;
     bool createAccWinOpen = false;
     bool loginWinOpen = false;
-    bool setVerification = false; //checks whether verification box should be displayed
+    bool setVerification; //checks whether verification box should be displayed
+    bool setVerificationLog = false; //checks whether login was successful
     bool accCreated = false; //checks whether an account was properly created
+    bool enteredClickCA = false;
+    bool enteredClickL = false;
+    bool loggedIn;
+    bool checkOutBook = false;
+    bool ViewHistroy = false;
+    bool ReturnWin = false;
+    bool isReturnDone = false;
 
-    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
+    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries");
 
     //user input font
     sf::Text output;
     sf::Font outFont = loadFont("times new roman.ttf");
     output.setFont(outFont);
 
-/* MAIN WINDOW TEXTURES AND FONTS*/
-    sf::Texture texture = loadTexture("BWB logo.png");
-    sf::Sprite logo(texture);
-    logo.setPosition(690, 170);
-    logo.scale(sf::Vector2f(0.75f, 0.75f));
+    //set position for any additional text boxes
+    sf::Vector2f posB;
+
+    //string for any error or confirmation messages
+    string errorMessage;
+
+    /* MAIN WINDOW TEXTURES AND FONTS*/
+        /*sf::Texture texture = loadTexture("BWB logo.png");
+        sf::Sprite logo(texture);
+        logo.setPosition(690, 170);
+        logo.scale(sf::Vector2f(0.75f, 0.75f));*/
+
+        //Draw Background
+    sf::Texture texture2 = loadTexture("background.png");
+    sf::Sprite background(texture2);
+    background.setPosition(0, 163);
+    background.scale(sf::Vector2f(1.00f, 1.00f));
+
 
     //username and password text creation
     sf::RectangleShape usernameBox(sf::Vector2f(275, 50));
@@ -265,7 +456,7 @@ int main(int argc, char const** argv){
     loginB.setFont(outFont);
     loginB.setPosition(sf::Vector2f(970, 840));
 
-/*CREATE ACCOUNT WINDOW TEXTURES AND FONTS*/
+    /*CREATE ACCOUNT WINDOW TEXTURES AND FONTS*/
     sf::RectangleShape passVeriBox(sf::Vector2f(275, 50));
     textBox passVeriText(false);
 
@@ -288,8 +479,33 @@ int main(int argc, char const** argv){
     requirements.setFillColor(sf::Color::Black);
     requirements.setPosition(410, 850);
 
-/*MAIN SFML FUNCTION WITH WINDOW*/
-    while (window.isOpen()){
+    /*LOGIN WINDOOW TEXTURES AND FONTS*/
+    Button signOut("Log Out", { 100, 30 }, 25);
+    signOut.setFont(outFont);
+    signOut.setPosition(sf::Vector2f(15, 300));
+
+    Button RentBook("Check out a book now", { 400, 70 }, 40);
+    RentBook.setFont(outFont);
+    RentBook.setPosition(sf::Vector2f(400, 700));
+
+    Button CheckHistroy("View your checkout history", { 500, 70 }, 40);
+    CheckHistroy.setFont(outFont);
+    CheckHistroy.setPosition(sf::Vector2f(1200, 700));
+
+    Button returnAbook("Return A Book", { 450, 50 }, 40);
+    returnAbook.setFont(outFont);
+    returnAbook.setPosition(sf::Vector2f(800, 500));
+
+    Button back("Back", { 100, 30 }, 25);
+    back.setFont(outFont);
+    back.setPosition(sf::Vector2f(10, 980));
+
+    Button returnAction("Return This Book", { 400, 50 }, 40);
+    returnAction.setFont(outFont);
+    returnAction.setPosition(sf::Vector2f(500, 500));
+
+    /*MAIN SFML FUNCTION WITH WINDOW*/
+    while (window.isOpen()) {
 
         sf::Event event;
         auto mousePos = sf::Mouse::getPosition(window);
@@ -317,7 +533,7 @@ int main(int argc, char const** argv){
         }
 
 
-        while (window.pollEvent(event)){
+        while (window.pollEvent(event)) {
             switch (event.type) {
                 // "close requested" event: we close the window
             case sf::Event::Closed:
@@ -329,7 +545,7 @@ int main(int argc, char const** argv){
                 passText.typedOn(event);
                 passVeriText.typedOn(event);
                 break;
-            
+
             case sf::Event::MouseMoved:
                 if (mainWinOpen) {
                     if (createAcc.isMouseTouching(window)) {
@@ -354,6 +570,77 @@ int main(int argc, char const** argv){
                     else {
                         createAcc2.setBgColor(sf::Color(220, 220, 200));
                     }
+
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
+
+                if (loginWinOpen) {
+                    if (signOut.isMouseTouching(window)) {
+                        signOut.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        signOut.setBgColor(sf::Color(220, 220, 220));
+                    }
+                    if (RentBook.isMouseTouching(window)) {
+                        RentBook.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        RentBook.setBgColor(sf::Color(220, 220, 220));
+                    }
+                    if (CheckHistroy.isMouseTouching(window)) {
+                        CheckHistroy.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        CheckHistroy.setBgColor(sf::Color(220, 220, 220));
+
+                    }
+                    if (returnAbook.isMouseTouching(window)) {
+
+                        returnAbook.setBgColor(sf::Color(200, 200, 200));
+
+                    }
+                    else {
+                        returnAbook.setBgColor(sf::Color(220, 220, 220));
+                    }
+
+                }
+
+                if (checkOutBook) {
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
+
+                }
+
+                if (ViewHistroy) {
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
+                if (ReturnWin) {
+                    if (returnAction.isMouseTouching(window)) {
+                        returnAction.setBgColor(sf::Color(200, 200, 200));
+                    }
+                    else {
+                        returnAction.setBgColor(sf::Color(220, 220, 220));
+                    }
                 }
 
             case sf::Event::MouseButtonPressed:
@@ -364,15 +651,17 @@ int main(int argc, char const** argv){
                             loginWinOpen = false;
                             mainWinOpen = false;
 
+                            userText.clear();
+                            passText.clear();
+                            passVeriText.clear();
+
                             userText.setPosition(sf::Vector2f(905, 447));
                             passText.setPosition(sf::Vector2f(905, 547));
                         }
 
                         //HAVE TO VERIFY BEFORE GOING TO LOGIN PAGE
                         else if (loginB.isMouseTouching(window)) {
-                            loginWinOpen = true;
-                            createAccWinOpen = false;
-                            mainWinOpen = false;
+                            loginB.setClicked(true);
                         }
                     }
 
@@ -381,7 +670,71 @@ int main(int argc, char const** argv){
                             setVerification = true;
                             createAcc2.setClicked(true);
                         }
+
+                        if (back.isMouseTouching(window)) {
+                            mainWinOpen = true;
+                            createAccWinOpen = false;
+                        }
+
                     }
+
+                    if (loginWinOpen) {
+                        if (signOut.isMouseTouching(window)) {
+                            control.logOut();
+                            loginWinOpen = false;
+                            mainWinOpen = true;
+
+                            userText.clear();
+                            passText.clear();
+
+                            signOut.setClicked(true);
+                        }
+                        if (RentBook.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            checkOutBook = true;
+                            RentBook.setClicked(true);
+                        }
+                        if (CheckHistroy.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            ViewHistroy = true;
+                            CheckHistroy.setClicked(true);
+
+                        }
+                        if (returnAbook.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            ReturnWin = true;
+                            returnAbook.setClicked(true);
+                        }
+                    }
+
+                    if (checkOutBook) {
+                        if (back.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            checkOutBook = false;
+                        }
+                    }
+
+                    if (ViewHistroy) {
+                        if (back.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            ViewHistroy = false;
+                        }
+                    }
+                    if (ReturnWin) {
+                        if (back.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            ReturnWin = false;
+                        }
+                        if (returnAction.isMouseTouching(window)) {
+                            loginWinOpen = false;
+                            isReturnDone = true;
+                            returnAction.setClicked(true);
+                        }
+
+                    }
+
+
+
                 }
             }
 
@@ -389,50 +742,189 @@ int main(int argc, char const** argv){
 
         window.clear(sf::Color(220, 220, 220));
 
+
+        if (loginB.getClicked()) {
+            enteredClickL = true;
+            setVerificationLog = VerifyLogin(window, control, userText, passText);
+
+            if (setVerificationLog) {
+                loginWinOpen = true;
+                createAccWinOpen = false;
+                mainWinOpen = false;
+            }
+
+            loginB.setClicked(false);
+        }
+
         if (mainWinOpen) {
+            userText.setPosition(sf::Vector2f(905, 647));
+            passText.setPosition(sf::Vector2f(905, 747));
+
+            window.draw(background);
             LoadMainWindow(window, usernameBox, passwordBox);
             userText.drawTo(window);
             passText.drawTo(window);
             createAcc.drawTo(window);
             loginB.drawTo(window);
-            window.draw(logo);
+            //window.draw(logo);
+
+            posB = { 650, 970 };
+
+            if (enteredClickL && !setVerificationLog) {
+                DrawErrorMessage(window, posB, false, "Username or password is incorrect");
+            }
         }
 
         if (createAccWinOpen) {
+            enteredClickL = false;
+
             LoadCreateAccWindow(window, usernameBox, passwordBox, passVeriBox);
+            back.drawTo(window);
             userText.drawTo(window);
             passText.drawTo(window);
             passVeriText.drawTo(window);
             createAcc2.drawTo(window);
             window.draw(requirements);
+
+
+            posB = { 650, 300 };
+
             if (createAcc2.getClicked()) {
-                VerifyCreateAcc(window, control, userText, passText, passVeriText);
+                enteredClickCA = true;
+
+                accCreated = VerifyCreateAcc(window, control, userText, passText, passVeriText, errorMessage);
+
+                if (!accCreated) {
+                    setVerification = false;
+                }
+
+                else {
+                    //Go back to the main window. 
+                    loginWinOpen = false;
+                    createAccWinOpen = false;
+                    mainWinOpen = true;
+                    accCreated = false;
+                    userText.clear();
+                    passText.clear();
+
+                    setVerification = true;
+                }
+
+                createAcc2.setClicked(false);
             }
+
+            if (enteredClickCA) {
+                if (!setVerification)
+                    DrawErrorMessage(window, posB, false, errorMessage);
+
+            }
+
         }
 
         if (loginWinOpen) {
-            LoadLoginWindow(window, "John");
+            //sf::Texture texture_login = loadTexture("UF.png"); 
+            //sf::Sprite logo_login(texture_login); 
+
+            sf::Texture texture_login = loadTexture("LoginWindow.png");
+            sf::Sprite logo_login(texture_login);
+            logo_login.setPosition(0, 163);
+            logo_login.scale(sf::Vector2f(1.00f, 1.00f));
+
+            window.draw(logo_login);
+            LoadLoginWindow(window, control);
+
+            signOut.drawTo(window);
+            RentBook.drawTo(window);
+            CheckHistroy.drawTo(window);
+            returnAbook.drawTo(window);
+        }
+
+
+        if (checkOutBook) {
+            //First Image being loaded...
+            sf::Texture texture_checkout = loadTexture("Library.png");
+            sf::Sprite logo_checkout(texture_checkout);
+            //First Image POS
+            logo_checkout.setPosition(1400, 160);
+            logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
+
+            LoadCheckOutWindow(window);
+            window.draw(logo_checkout);
+            back.drawTo(window);
+        }
+
+        if (ViewHistroy) {
+            sf::Texture texture_checkoutHis = loadTexture("UF.png");
+            sf::Sprite logo_checkoutHis(texture_checkoutHis);
+            logo_checkoutHis.setPosition(1430, 170);
+            logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
+
+            float y_pos = 450;
+            float prevBook = 0;
+            sf::Text userHistory;
+
+            userHistory.setFont(outFont);
+            userHistory.setCharacterSize(35);
+            userHistory.setFillColor(sf::Color::Black);
+            userHistory.setPosition(720, 640);
+
+            vector<string> dispHis = control.activeUser.getCheckoutHistory();
+
+            for (int i = 0; i < dispHis.size(); i++) {
+                userHistory.setString(to_string(i + 1) + " : " + Book(dispHis[i]).name + "      " + Book(dispHis[i]).author);
+                userHistory.setPosition(sf::Vector2f(400, y_pos));
+
+
+                window.draw(userHistory);
+
+                prevBook = userHistory.getGlobalBounds().height;
+                y_pos += 15 + prevBook;
+
+                LoadCheckOutWindowHis(window, control);
+                window.draw(logo_checkoutHis);
+                back.drawTo(window);
+            }
+
+
 
         }
-        
+
+
+        if (ReturnWin) {
+            sf::Texture texture_return = loadTexture("Library.png");
+            sf::Sprite logo_return(texture_return);
+            sf::Text text;
+            text.setFont(outFont);
+            text.setCharacterSize(35);
+            text.setFillColor(sf::Color::Black);
+            text.setPosition(200, 300);
+
+            string getIsbn = control.activeUser.getCurrentCheckout();
+            logo_return.setPosition(1400, 160);
+            logo_return.scale(sf::Vector2f(1.00f, 1.00f));
+
+            if (getIsbn != "-1") {
+                text.setString("Your current checkout book: \n " + Book(getIsbn).name);
+            }
+            else {
+                text.setString("You don't have current checkout record");
+            }
+
+            if (isReturnDone) {
+                User(returnBook());
+                text.setString("Successfully returned the book, Have a great day!");
+            }
+
+            LoadReturnWin(window, control);
+            returnAction.drawTo(window);
+            window.draw(text);
+            window.draw(logo_return);
+            back.drawTo(window);
+
+        }
+
         window.display();
     }
-
-    //AcessManager control;
-
-    //control.SignUp();
-    //control.LoginIn();
-
-    User user1("john224");
-    cout << "(1) INITIAL STATE" << endl;
-    user1.print();
-    user1.returnBook();
-    cout << "(2) BOOK RETURN" << endl;
-    user1.print();
-    user1.checkoutBook("502");
-    cout << "(3) BOOK CHECKOUT" << endl;
-    user1.print();
-
 
     return 0;
 }
