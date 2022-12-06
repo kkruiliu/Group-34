@@ -28,6 +28,7 @@ private:
 
 	}
 
+	//Deletes the last character in the box (backspace)
 	void deleteLast() {
 		std::string t = input.str();
 		std::string newT = "";
@@ -64,6 +65,7 @@ public:
 		text.setPosition(pos);
 	}
 
+	//Sets if the textbox is selected
 	void setSelected(bool sel) {
 		isSelected = sel;
 		if (!sel && !input.str().empty()) {
@@ -102,6 +104,7 @@ public:
 		}
 	}
 
+	//Deletes all text in the textbox
 	void clear() {
 		input.str("");
 		input.clear();

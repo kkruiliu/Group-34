@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iostream>
-//#include <User.h>
 #include "User.h"
 #include <vector>
 #include <regex>
@@ -10,14 +9,12 @@
 
 using namespace std;
 
-ifstream fin("User.json");
-ofstream fout("User.json", ios_base::app);
-
 class AccessManager {
 public:
     User activeUser;
     bool loggedIn = false;
 
+    //Takes in a username and password, verifies they meet requirements, if so adds a user to the database and returns successful string
     string SignUp(string username, string password) {
         //Accepts upper case/ lower case/ underscores / numbers. 6-16 characters
         regex usernameRequirement = regex("^[A-Za-z0-9_]{6,16}$");
@@ -39,7 +36,7 @@ public:
         return "Successfully created account!";
     }
 
-
+    //Checks if the username and password combo is correct from database, then sets the active user if it was correct
     void logIn(string username, string password) {
         Json::Value data = readData();
         bool validUser = false;
@@ -55,12 +52,13 @@ public:
         }
     }
 
+    //Logs the active user out
     void logOut() {
         activeUser = User();
         loggedIn = false;
     }
 
-    //returns the numbers of the accountts in the file
+    //returns the numbers of the accounts in the file
     int accounts_number() {
         return readData().getMemberNames().size();
     }

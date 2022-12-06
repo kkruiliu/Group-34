@@ -5,7 +5,6 @@
 #include <map>
 #include "Database.h"
 
-//#include "Reviews.h"
 using namespace std;
 
 struct Book {
@@ -29,6 +28,7 @@ struct Book {
     static vector<Book> searchBooks(string query);
 };
 
+//Null book constructor
 Book::Book() {
     author = "";
     name = "";
@@ -37,6 +37,8 @@ Book::Book() {
     year = "";
     rating = "Unrated";
 }
+
+//Constructor that takes an isbn and populates the rest of the info from the database
 Book::Book(string _isbn) {
     Json::Value data = readData();
     if (data["books"].isMember(_isbn)) {
@@ -59,6 +61,8 @@ Book::Book(string _isbn) {
         rating = "Unrated";
     }
 }
+
+//Constructor that creates a new book and writes it to the database
 Book::Book(string _isbn, string _name, string _author, string _year) {
     isbn = _isbn;
     author = _author;
@@ -79,12 +83,11 @@ Book::Book(string _isbn, string _name, string _author, string _year) {
     emptymap["temp"] = "temp";
     emptymap.removeMember("temp");
     book["ratings"] = emptymap;
-    //book["ratings"] = Json::Value;
     data["books"][_isbn] = book;
     writeData(data);
 }
 
-//add review parameter
+//adds a review to a book, updating the object and database
 void Book::add_review(string username, string review) {
 
     Json::Value data = readData();					//Store JSON data and make it accessible
@@ -115,21 +118,22 @@ void Book::add_review(string username, string review) {
     this->bookRatings[username] = review;
 }
 
+//adds a book to the database
 void Book::addBook(string _isbn, string _name, string _author, string _year) {
     Book(_isbn, _name, _author, _year);
 }
 
+//removes a book from the database
 void Book::removeBook(string _isbn) {
     Json::Value data = readData();
     data["books"].removeMember(_isbn);
     writeData(data);
 }
 
-//Since we are preStoring Books onto the database...
-//ALL BOOKS NEED TO BE STORED IN THE VECTOR. READ THE DATABASE AND CREATE BOOK OBJECTS
+//returns a vector of book objects representing all books in the database
 vector<Book> Book::getBookCollection() {
 
-    Json::Value data = readData();					//Store JSON data and make it accessible
+    Json::Value data = readData();					
     vector<Book> books;
 
     //Store all books from the "JSON database" into a vector for easier access. 
@@ -140,6 +144,7 @@ vector<Book> Book::getBookCollection() {
     return books;
 }
 
+//returns a vector of book objects representing all books in the database that match the search parameter
 vector<Book> Book::searchBooks(string query) {
     vector<Book> results;
     for (Book book : getBookCollection()) {

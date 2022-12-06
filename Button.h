@@ -48,6 +48,7 @@ public:
 		window.draw(text);
 	}
 
+	//returns if the mouse is currently touching the button
 	bool isMouseTouching(sf::RenderWindow& window) {
 		auto mousePos = sf::Mouse::getPosition(window);
 
