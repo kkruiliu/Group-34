@@ -176,21 +176,17 @@ void ShowBooks(sf::RenderWindow& window) {
     sf::Text BookData;
     sf::Text availability;
     BookList.setFont(outFont);
-    BookList.setCharacterSize(40);
-    BookList.setFillColor(sf::Color::Black);
-
-    BookData.setFont(outFont);
-    BookData.setCharacterSize(30);
+    BookList.setCharacterSize(30);
     BookList.setFillColor(sf::Color::Black);
 
     availability.setFont(outFont);
-    availability.setCharacterSize(40);
+    availability.setCharacterSize(30);
 
     float y_pos = 450;
     float prevBook = 0;
 
     vector<Book> bookDisplay = currBook.getBookCollection();
-    
+
     for (int i = 0; i < bookDisplay.size(); i++) {
         available = bookDisplay[i].availability;
       
@@ -206,14 +202,15 @@ void ShowBooks(sf::RenderWindow& window) {
             availability.setFillColor(sf::Color::Red);
         }
 
-
-        BookList.setPosition(sf::Vector2f(500, (y_pos + (i * 35) + prevBook)));
-        availability.setPosition(sf::Vector2f((510 + BookList.getGlobalBounds().width), (y_pos + (i * 35) + prevBook)));
+        BookList.setPosition(sf::Vector2f(400, y_pos));
+        availability.setPosition(sf::Vector2f((410 + BookList.getGlobalBounds().width), y_pos));
         window.draw(BookList);
         window.draw(availability);
 
         prevBook = BookList.getGlobalBounds().height;
-        
+
+        y_pos += 15 + prevBook;
+
     }
 }
 
@@ -452,6 +449,10 @@ int main(int argc, char const** argv){
     CheckHistroy.setFont(outFont);
     CheckHistroy.setPosition(sf::Vector2f(1200, 700));
 
+    Button back("Back", { 100, 30 }, 25);
+    back.setFont(outFont);
+    back.setPosition(sf::Vector2f(10, 980));
+
 /*MAIN SFML FUNCTION WITH WINDOW*/
     while (window.isOpen()){
 
@@ -518,6 +519,14 @@ int main(int argc, char const** argv){
                     else {
                         createAcc2.setBgColor(sf::Color(220, 220, 200));
                     }
+
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
                 }
 
                 if (loginWinOpen) {
@@ -542,6 +551,27 @@ int main(int argc, char const** argv){
                     else {
                         CheckHistroy.setBgColor(sf::Color(220, 220, 220));
 
+                    }
+                }
+
+                if (checkOutBook) {
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
+
+                }
+
+                if (ViewHistroy) {
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
                     }
                 }
 
@@ -572,6 +602,12 @@ int main(int argc, char const** argv){
                             setVerification = true;
                             createAcc2.setClicked(true);
                         }
+
+                        if (back.isMouseTouching(window)) {
+                            mainWinOpen = true;
+                            createAccWinOpen = false;
+                        }
+
                     }
 
                     if (loginWinOpen) {
@@ -597,6 +633,20 @@ int main(int argc, char const** argv){
 
                         }
                     }
+                    if (checkOutBook) {
+                        if (back.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            checkOutBook = false;
+                        }
+                    }
+
+                    if (ViewHistroy) {
+                        if (back.isMouseTouching(window)) {
+                            loginWinOpen = true;
+                            ViewHistroy = false;
+                        }
+                    }
+
 
 
                 }
@@ -642,11 +692,13 @@ int main(int argc, char const** argv){
             enteredClickL = false;
 
             LoadCreateAccWindow(window, usernameBox, passwordBox, passVeriBox);
+            back.drawTo(window);
             userText.drawTo(window);
             passText.drawTo(window);
             passVeriText.drawTo(window);
             createAcc2.drawTo(window);
             window.draw(requirements);
+
 
             posB = { 650, 300 };
 
@@ -701,7 +753,8 @@ int main(int argc, char const** argv){
             logo_checkout.setPosition(1530, 170);
             logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindow(window); 
-            window.draw(logo_checkout); 
+            window.draw(logo_checkout);
+            back.drawTo(window);
          
         }
 
@@ -712,6 +765,7 @@ int main(int argc, char const** argv){
             logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindowHis(window,control);
             window.draw(logo_checkoutHis);
+            back.drawTo(window);
            
         }
 
