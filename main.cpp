@@ -197,7 +197,7 @@ void ShowBooks(sf::RenderWindow& window) {
     TextAvailability.setFont(outFont);
     TextAvailability.setCharacterSize(30);
 
-    float y_pos = 450;
+    float y_pos = 350;
     float prevBook = 0;
 
     vector<Book> bookDisplay = currBook.getBookCollection();
@@ -219,8 +219,8 @@ void ShowBooks(sf::RenderWindow& window) {
         }
       
 
-        BookList.setPosition(sf::Vector2f(400, y_pos));
-        TextAvailability.setPosition(sf::Vector2f((410 + BookList.getGlobalBounds().width), y_pos));
+        BookList.setPosition(sf::Vector2f(100, y_pos));
+        TextAvailability.setPosition(sf::Vector2f((110 + BookList.getGlobalBounds().width), y_pos));
         window.draw(BookList);
         window.draw(TextAvailability);
 
@@ -279,7 +279,7 @@ void LoadCheckOutWindow(sf::RenderWindow& window) {
     checkOutBox.setFillColor(sf::Color::White);
     checkOutBox.setOutlineThickness(3.f);
     checkOutBox.setOutlineColor(sf::Color(90, 90, 90));
-    checkOutBox.setPosition(50, 425);
+    checkOutBox.setPosition(50, 325);
 
     window.draw(welcomeText);
     window.draw(checkOutBox);
@@ -300,6 +300,26 @@ void LoadCheckOutWindowHis(sf::RenderWindow& window, AccessManager& control) {
     welcomeText.setString(control.activeUser.getUsername()+ "'s checkout history");
 
     window.draw(welcomeText);
+}
+
+void LoadActiveCheckout(sf::RenderWindow& window, sf::RectangleShape& checkOutBox) {
+    setTitle(window);
+
+    sf::Font font = loadFont("times new roman.ttf");
+    sf::Text checkConf;
+    checkConf.setFont(font);
+    checkConf.setCharacterSize(40);
+    checkConf.setPosition(sf::Vector2f(425, 200));
+    checkConf.setFillColor(sf::Color::Black);
+    checkConf.setString("Enter the number of the book you would like to check out.");
+
+    window.draw(checkConf);
+
+    checkOutBox.setFillColor(sf::Color::White);
+    checkOutBox.setOutlineThickness(2.f);
+    checkOutBox.setOutlineColor(sf::Color(90, 90, 90));
+    checkOutBox.setPosition(900, 450);
+    window.draw(checkOutBox);
 }
 
 bool VerifyCreateAcc(sf::RenderWindow& window, AccessManager& control, textBox& userText, textBox& passText,
@@ -381,14 +401,19 @@ int main(int argc, char const** argv){
     bool mainWinOpen = true;
     bool createAccWinOpen = false;
     bool loginWinOpen = false;
+    bool checkOutBook = false;
+    bool ViewHistroy = false;
+    bool activeCheckout = false;
+
     bool setVerification; //checks whether verification box should be displayed
     bool setVerificationLog = false; //checks whether login was successful
     bool accCreated = false; //checks whether an account was properly created
     bool enteredClickCA = false; 
     bool enteredClickL = false;
     bool loggedIn;
-    bool checkOutBook = false; 
-    bool ViewHistroy = false; 
+    //Booleans for checkout
+    bool checkIfCheckedOut = false;
+    bool verifyCheck = false;
 
     auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Books Without Boundaries" );
 
@@ -476,8 +501,26 @@ int main(int argc, char const** argv){
     back.setFont(outFont);
     back.setPosition(sf::Vector2f(10, 980));
 
+    Button checkOut("Check Out", { 150, 30 }, 25);
+    checkOut.setFont(outFont);
+    checkOut.setPosition(sf::Vector2f(900, 980));
+
+    //Button for checkout on active checkout page
+    Button checkOutB("Check Out", { 400, 50 }, 40);
+    checkOutB.setFont(outFont);
+    checkOutB.setPosition(sf::Vector2f(725, 550));
+    checkOutB.setClicked(false);
+
+    //textbox for checkout
+    sf::RectangleShape checkOutBox(sf::Vector2f(75, 50));
+    textBox checkText(false);
+    checkText.setFont(outFont);
+    checkText.setPosition(sf::Vector2f(925, 450));
+
+
 /*MAIN SFML FUNCTION WITH WINDOW*/
     while (window.isOpen()){
+        vector<Book> allBooks = Book::getBookCollection();
 
         sf::Event event;
         auto mousePos = sf::Mouse::getPosition(window);
@@ -494,13 +537,21 @@ int main(int argc, char const** argv){
                 userText.setSelected(false);
                 passVeriText.setSelected(false);
                 passText.setSelected(true);
-
+                checkText.setSelected(false);
             }
 
             else if (passVeriBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                 userText.setSelected(false);
                 passText.setSelected(false);
                 passVeriText.setSelected(true);
+                checkText.setSelected(false);
+            }
+
+            else if (checkOutBox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                userText.setSelected(false);
+                passText.setSelected(false);
+                passVeriText.setSelected(false);
+                checkText.setSelected(true);
             }
         }
 
@@ -516,6 +567,7 @@ int main(int argc, char const** argv){
                 userText.typedOn(event);
                 passText.typedOn(event);
                 passVeriText.typedOn(event);
+                checkText.typedOn(event);
                 break;
             
             case sf::Event::MouseMoved:
@@ -586,6 +638,14 @@ int main(int argc, char const** argv){
                         back.setBgColor(sf::Color(220, 220, 220));
                     }
 
+                    if (checkOut.isMouseTouching(window)) {
+                        checkOut.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        checkOut.setBgColor(sf::Color(220, 220, 220));
+                    }
+
                 }
 
                 if (ViewHistroy) {
@@ -595,6 +655,24 @@ int main(int argc, char const** argv){
 
                     else {
                         back.setBgColor(sf::Color(220, 220, 220));
+                    }
+                }
+
+                if (activeCheckout) {
+                    if (back.isMouseTouching(window)) {
+                        back.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        back.setBgColor(sf::Color(220, 220, 220));
+                    }
+
+                    if (checkOutB.isMouseTouching(window)) {
+                        checkOutB.setBgColor(sf::Color(200, 200, 200));
+                    }
+
+                    else {
+                        checkOutB.setBgColor(sf::Color(220, 220, 220));
                     }
                 }
 
@@ -656,10 +734,16 @@ int main(int argc, char const** argv){
 
                         }
                     }
+
                     if (checkOutBook) {
                         if (back.isMouseTouching(window)) {
                             loginWinOpen = true;
                             checkOutBook = false;
+                        }
+
+                        if (checkOut.isMouseTouching(window)) {
+                            checkOutBook = false;
+                            activeCheckout = true;
                         }
                     }
 
@@ -670,7 +754,16 @@ int main(int argc, char const** argv){
                         }
                     }
 
+                    if (activeCheckout) {
+                        if (back.isMouseTouching(window)) {
+                            checkOutBook = true;
+                            activeCheckout = false;
+                        }
 
+                        if (checkOutB.isMouseTouching(window)) {
+                            checkOutB.setClicked(true);
+                        }
+                    }
 
                 }
             }
@@ -787,6 +880,7 @@ int main(int argc, char const** argv){
             LoadCheckOutWindow(window);
             window.draw(logo_checkout);
             back.drawTo(window);
+            checkOut.drawTo(window);
         }
 
         if (ViewHistroy) {
@@ -803,6 +897,10 @@ int main(int argc, char const** argv){
             userHistory.setCharacterSize(35);
             userHistory.setFillColor(sf::Color::Black);
             userHistory.setPosition(720, 640);
+
+            LoadCheckOutWindowHis(window, control);
+            window.draw(logo_checkoutHis);
+            back.drawTo(window);
             
             vector<string> dispHis = control.activeUser.getCheckoutHistory();
 
@@ -816,13 +914,44 @@ int main(int argc, char const** argv){
               prevBook = userHistory.getGlobalBounds().height;
               y_pos += 15 + prevBook;
 
-              LoadCheckOutWindowHis(window, control);
-              window.draw(logo_checkoutHis);
-              back.drawTo(window);
+            }
+         
+        }
+
+        if (activeCheckout) {
+            LoadActiveCheckout(window, checkOutBox);
+            checkText.drawTo(window);
+            checkOutB.drawTo(window);
+            back.drawTo(window);
+
+            posB = { 600, 300 };
+
+            if (checkOutB.getClicked()) {
+                string bookChecked = checkText.getText();
+                
+                int bookNum = stoi(bookChecked);
+
+                checkIfCheckedOut = true;
+
+                if (bookNum <= allBooks.size() && bookNum > 0) {
+                    verifyCheck = control.activeUser.checkoutBook(allBooks[bookNum - 1].isbn);
+                }
+
+                else {
+                    verifyCheck = false;
+                }
+
+                checkOutB.setClicked(false); 
             }
 
-        
-           
+            if (checkIfCheckedOut && verifyCheck) {
+                DrawErrorMessage(window, posB, true, "Book successfully checked out!");
+            }
+
+            else if (checkIfCheckedOut && !verifyCheck) {
+                DrawErrorMessage(window, posB, false, "This book is not available.");
+            }
+
         }
 
         window.display();
