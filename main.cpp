@@ -4,6 +4,7 @@
 #include "textBox.h"
 #include "User.h"
 #include <SFML/Graphics.hpp>
+
 #include <iostream>
 #include <list> 
 
@@ -808,6 +809,7 @@ int main(int argc, char const** argv) {
                         if (returnAction.isMouseTouching(window)) {
                             loginWinOpen = false;
                             isReturnDone = true;
+
                             returnAction.setClicked(true);
                         }
                     }
@@ -1012,7 +1014,7 @@ int main(int argc, char const** argv) {
 
         }
 
-        if(ReturnWin) {
+        if (ReturnWin) {
             sf::Texture texture_return = loadTexture("Library.png");
             sf::Sprite logo_return(texture_return);
             sf::Text text;
@@ -1021,25 +1023,38 @@ int main(int argc, char const** argv) {
             text.setFillColor(sf::Color::Black);
             text.setPosition(200, 300);
 
+
+
             string getIsbn = control.activeUser.getCurrentCheckout();
             logo_return.setPosition(1400, 160);
             logo_return.scale(sf::Vector2f(1.00f, 1.00f));
+            bool hasbeenReturn = false; 
 
-            if (getIsbn != "-1") {
+
+            if ( getIsbn != "-1") {
                 text.setString("Your current checkout book: \n " + Book(getIsbn).name);
+             
             }
-            else {
-                text.setString("You don't have anything currently checked out.");
-            }
+            if (getIsbn == "-1"&&!isReturnDone&&!hasbeenReturn) {
+                text.setString("You don't have current checkout record");
+            } 
 
-            if (isReturnDone) {
+            if (!hasbeenReturn && isReturnDone ) {
+                text.setString("        ");
+      
+            }
+           
+            if (isReturnDone && getIsbn != "-1"&&!hasbeenReturn) {
+                hasbeenReturn = true;
                 control.activeUser.returnBook();
-                text.setString("Successfully returned the book, Have a great day!");
-            }
+                text.setString("        ");
 
+            }
+            isReturnDone = false; 
+            window.draw(text);
             LoadReturnWin(window, control);
             returnAction.drawTo(window);
-            window.draw(text);
+           
             window.draw(logo_return);
             back.drawTo(window);
 
