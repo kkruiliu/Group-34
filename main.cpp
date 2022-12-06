@@ -1029,7 +1029,7 @@ int main(int argc, char const** argv) {
                 text.setString("Your current checkout book: \n " + Book(getIsbn).name);
             }
             else {
-                text.setString("You don't have current checkout record");
+                text.setString("You don't have anything currently checked out.");
             }
 
             if (isReturnDone) {
