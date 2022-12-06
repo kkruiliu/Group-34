@@ -26,6 +26,7 @@ public:
 	void print();
 };
 
+//Constructor that takes a username and populates the rest of the info from the database
 User::User(string username) {
 	this->username = username;
 
@@ -37,6 +38,8 @@ User::User(string username) {
 	current_checkout = data["users"][username]["current_checkout"].asString();
 	checkout_date = data["users"][username]["checkout_date"].asString();
 }
+
+//Constructor that creates a new user and writes it to the database
 User::User(string username, string password) {
 	this->username = username;
 
@@ -53,11 +56,14 @@ User::User(string username, string password) {
 
 }
 
+//Null user object
 User::User() {
 	this->username = "NULL";
 	this->current_checkout = "-1";
 	this->checkout_date = "Never";
 }
+
+//Prints user details to the terminal (for debugging)
 void User::print(){
 	cout << "==============================" << endl;
 	cout << "Username is " << username << endl;
@@ -82,6 +88,8 @@ std::vector<string> User::getCheckoutHistory() {
 std::string User::getCurrentCheckout() {
 	return current_checkout;
 }
+
+//Checks the book out for a user, updating the object and database
 bool User::checkoutBook(string isbn) {
 
 	Json::Value data = readData();
@@ -104,6 +112,8 @@ bool User::checkoutBook(string isbn) {
 	}
 	return false;
 }
+
+//Returns the book that a user previous checked out, updating the object and database
 void User::returnBook() {
 	if(current_checkout != "-1"){
 		Json::Value data = readData();

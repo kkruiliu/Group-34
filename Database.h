@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//Return a Json::Value object containing all the data from the database
 Json::Value readData() {
 	ifstream file("Database.json");
 	Json::Reader reader;
@@ -16,6 +17,7 @@ Json::Value readData() {
 	return data;
 }
 
+//Writes a Json::Value object to the database
 void writeData(Json::Value& data) {
 	Json::StyledStreamWriter writer;
 	ofstream closer;
