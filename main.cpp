@@ -187,15 +187,15 @@ void ShowBooks(sf::RenderWindow& window) {
     sf::Font outFont = loadFont("times new roman.ttf");
 
     bool available;
-    sf::Text BookList;
+    sf::Text BookList;  
     sf::Text BookData;
-    sf::Text availability;
+    sf::Text TextAvailability;
     BookList.setFont(outFont);
     BookList.setCharacterSize(30);
     BookList.setFillColor(sf::Color::Black);
 
-    availability.setFont(outFont);
-    availability.setCharacterSize(30);
+    TextAvailability.setFont(outFont);
+    TextAvailability.setCharacterSize(30);
 
     float y_pos = 450;
     float prevBook = 0;
@@ -208,22 +208,23 @@ void ShowBooks(sf::RenderWindow& window) {
         BookList.setString(to_string(i + 1) + " : " + bookDisplay[i].name + " - " + bookDisplay[i].author + "\n     Year: " + bookDisplay[i].year + "  | Rating: " + bookDisplay[i].rating);
 
         if (available) {
-            availability.setString("Available");
-            availability.setFillColor(sf::Color(0, 100, 0));
+            TextAvailability.setString("Available");
+            TextAvailability.setFillColor(sf::Color(0, 100, 0));
         }
 
         else {
-            availability.setString("Not Available");
-            availability.setFillColor(sf::Color::Red);
+            TextAvailability.setString("Not Available");
+            TextAvailability.setFillColor(sf::Color::Red);
+                    
         }
+      
 
         BookList.setPosition(sf::Vector2f(400, y_pos));
-        availability.setPosition(sf::Vector2f((410 + BookList.getGlobalBounds().width), y_pos));
+        TextAvailability.setPosition(sf::Vector2f((410 + BookList.getGlobalBounds().width), y_pos));
         window.draw(BookList);
-        window.draw(availability);
+        window.draw(TextAvailability);
 
         prevBook = BookList.getGlobalBounds().height;
-
         y_pos += 15 + prevBook;
 
     }
@@ -793,9 +794,34 @@ int main(int argc, char const** argv){
             sf::Sprite logo_checkoutHis(texture_checkoutHis);
             logo_checkoutHis.setPosition(1430, 170);
             logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
-            LoadCheckOutWindowHis(window,control);
-            window.draw(logo_checkoutHis);
-            back.drawTo(window); 
+
+            float y_pos = 450;
+            float prevBook = 0;
+            sf::Text userHistory;
+
+            userHistory.setFont(outFont);
+            userHistory.setCharacterSize(35);
+            userHistory.setFillColor(sf::Color::Black);
+            userHistory.setPosition(720, 640);
+            
+            vector<string> dispHis = control.activeUser.getCheckoutHistory();
+
+            for (int i = 0; i < dispHis.size(); i++) {
+              userHistory.setString(to_string(i + 1) + " : "+ Book(dispHis[i]).name+"      " + Book(dispHis[i]).author);
+              userHistory.setPosition(sf::Vector2f(400, y_pos));
+
+
+              window.draw(userHistory);
+
+              prevBook = userHistory.getGlobalBounds().height;
+              y_pos += 15 + prevBook;
+
+              LoadCheckOutWindowHis(window, control);
+              window.draw(logo_checkoutHis);
+              back.drawTo(window);
+            }
+
+        
            
         }
 
