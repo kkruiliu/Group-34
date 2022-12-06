@@ -777,7 +777,7 @@ int main(int argc, char const** argv){
 
         if (checkOutBook) {
             //First Image being loaded...
-            sf::Texture texture_checkout = loadTexture("Library.jfif");
+            sf::Texture texture_checkout = loadTexture("Library.png");
             sf::Sprite logo_checkout(texture_checkout);
             //First Image POS
             logo_checkout.setPosition(1400, 160);
@@ -795,7 +795,7 @@ int main(int argc, char const** argv){
             logo_checkoutHis.scale(sf::Vector2f(1.00f, 1.00f));
             LoadCheckOutWindowHis(window,control);
             window.draw(logo_checkoutHis);
-            back.drawTo(window);
+            back.drawTo(window); 
            
         }
 
