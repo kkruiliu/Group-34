@@ -98,6 +98,9 @@ bool User::checkoutBook(string isbn) {
 		current_checkout = isbn;
 
 		data["users"][username]["current_checkout"] = isbn;
+		
+		data["users"][username]["checkout_history"].append(current_checkout);
+		checkout_history.push_back(current_checkout);
 
 		time_t now = time(0);
 		string date_time = ctime(&now);
@@ -120,8 +123,6 @@ void User::returnBook() {
 
 		data["books"][current_checkout]["available"] = true;
 		
-		data["users"][username]["checkout_history"].append(current_checkout);
-		checkout_history.push_back(current_checkout);
 		current_checkout = "-1";
 		checkout_date = "";
 
