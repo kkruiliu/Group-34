@@ -54,10 +54,18 @@ void setTitle(sf::RenderWindow& window) {
     title.setString("Books Without Boundaries");
     title.setCharacterSize(60);
 
-    //Draw title text
+    //Draw Books Without Boundaries title
     sf::Texture texture1 = loadTexture("Title.png");
-    sf::Sprite BWBUF(texture1);
-    BWBUF.setPosition(0, 0);
+    sf::Sprite bwbTitle(texture1);
+    bwbTitle.setPosition(0, 0);
+    bwbTitle.scale(sf::Vector2f(1.00f, 1.00f));
+    window.draw(bwbTitle);
+
+    //UFBWB LOGO
+    sf::Texture texture2 = loadTexture("BWBUFLogo.png");
+    sf::Sprite BWBUF(texture2);
+    //Second Image POS
+    BWBUF.setPosition(1600, 80);
     BWBUF.scale(sf::Vector2f(1.00f, 1.00f));
     window.draw(BWBUF);
 
@@ -245,8 +253,8 @@ void LoadLoginWindow(sf::RenderWindow& window, AccessManager& control) {
 
     welcomeText.setFont(font);
     welcomeText.setCharacterSize(45);
-    welcomeText.setPosition(sf::Vector2f(10, 200));
-    welcomeText.setFillColor(sf::Color::Blue);
+    welcomeText.setPosition(sf::Vector2f(30, 200));
+    welcomeText.setFillColor(sf::Color::White);
     welcomeText.setString("Welcome, " + control.activeUser.getUsername());
 
 
@@ -453,7 +461,7 @@ int main(int argc, char const** argv){
 /*LOGIN WINDOOW TEXTURES AND FONTS*/
     Button signOut("Log Out", { 100, 30 }, 25);
     signOut.setFont(outFont);
-    signOut.setPosition(sf::Vector2f(1750, 50));
+    signOut.setPosition(sf::Vector2f(15, 300));
 
     Button RentBook("Check out a book now", { 400, 70 }, 40); 
     RentBook.setFont(outFont); 
@@ -750,12 +758,17 @@ int main(int argc, char const** argv){
         }
 
         if (loginWinOpen) {
-            sf::Texture texture_login = loadTexture("UF.png"); 
-            sf::Sprite logo_login(texture_login); 
-            logo_login.setPosition(830, 230);
+            //sf::Texture texture_login = loadTexture("UF.png"); 
+            //sf::Sprite logo_login(texture_login); 
+
+            sf::Texture texture_login = loadTexture("LoginWindow.png");
+            sf::Sprite logo_login(texture_login);
+            logo_login.setPosition(0, 163);
             logo_login.scale(sf::Vector2f(1.00f, 1.00f));
-            LoadLoginWindow(window, control);
+
             window.draw(logo_login);
+            LoadLoginWindow(window, control);
+           
             signOut.drawTo(window);
             RentBook.drawTo(window); 
             CheckHistroy.drawTo(window); 
@@ -766,20 +779,12 @@ int main(int argc, char const** argv){
             //First Image being loaded...
             sf::Texture texture_checkout = loadTexture("Library.jfif");
             sf::Sprite logo_checkout(texture_checkout);
-            //Second Imagebeing loaded...
-            sf::Texture texture_checkout2 = loadTexture("UFBWB.png");
-            sf::Sprite BWBUF(texture_checkout2);
-
             //First Image POS
             logo_checkout.setPosition(1400, 160);
             logo_checkout.scale(sf::Vector2f(1.00f, 1.00f));
-            //Second Image POS
-            BWBUF.setPosition(1420, -170);
-            BWBUF.scale(sf::Vector2f(1.00f, 1.00f));
 
             LoadCheckOutWindow(window);
             window.draw(logo_checkout);
-            window.draw(BWBUF);
             back.drawTo(window);
         }
 
