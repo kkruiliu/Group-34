@@ -13,7 +13,7 @@ public:
 
 	Button() {}
 
-	Button(std::string bText, sf::Vector2f size, int charSize) {
+	Button(const std::string& bText, sf::Vector2f size, int charSize) {
 		text.setString(bText);
 		text.setColor(sf::Color::Black);
 		text.setCharacterSize(charSize);

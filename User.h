@@ -15,19 +15,19 @@ class User
 	std::string current_checkout;
 	std::string checkout_date;
 public:
-	User(std::string username);
-	User(string username, string password);
+	explicit User(const string& username);
+	User(const string& username, const string& password);
 	User();
 	std::string getUsername();
 	std::vector<std::string> getCheckoutHistory();
 	std::string getCurrentCheckout();
-	bool checkoutBook(std::string isbn);
+	bool checkoutBook(const string& isbn);
 	void returnBook();
 	void print();
 };
 
 //Constructor that takes a username and populates the rest of the info from the database
-User::User(string username) {
+User::User(const string& username) {
 	this->username = username;
 
 	Json::Value data = readData();
@@ -40,7 +40,7 @@ User::User(string username) {
 }
 
 //Constructor that creates a new user and writes it to the database
-User::User(string username, string password) {
+User::User(const string& username, const string& password) {
 	this->username = username;
 
 	Json::Value data = readData();
@@ -90,7 +90,7 @@ std::string User::getCurrentCheckout() {
 }
 
 //Checks the book out for a user, updating the object and database
-bool User::checkoutBook(string isbn) {
+bool User::checkoutBook(const string& isbn) {
 
 	Json::Value data = readData();
 	
@@ -102,7 +102,7 @@ bool User::checkoutBook(string isbn) {
 		data["users"][username]["checkout_history"].append(current_checkout);
 		checkout_history.push_back(current_checkout);
 
-		time_t now = time(0);
+		time_t now = time(nullptr);
 		string date_time = ctime(&now);
 		date_time = date_time.substr(4, 7) + date_time.substr(20, 4);
 		data["users"][username]["checkout_date"] = date_time;

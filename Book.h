@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include "Database.h"
+#include <numeric>
 
 using namespace std;
 
@@ -17,29 +18,29 @@ struct Book {
     map<string, string> bookRatings;
 
     Book();
-    Book(string _isbn);
-    Book(string _isbn, string _name, string _author, string _year);
+    explicit Book( const string& _isbn);
+    Book(const string& _isbn, const string& _name, const string& _author, const string& _year);
 
-    void add_review(string username, string review);
+    void add_review(const string& username, const string& review);
 
-    static void addBook(string _isbn, string _name, string _author, string _year);
-    static void removeBook(string _isbn);
+    static void addBook(const string& _isbn, const string& _name, const string& _author, const string& _year);
+    static void removeBook(const string& _isbn);
     static vector<Book> getBookCollection();
-    static vector<Book> searchBooks(string query);
+    static vector<Book> searchBooks(const string& query);
 };
 
 //Null book constructor
-Book::Book() {
-    author = "";
-    name = "";
-    isbn = "-1";
-    availability = false;
-    year = "";
-    rating = "Unrated";
-}
+Book::Book()
+    : author(""),
+    name(""),
+    isbn("-1"),
+    availability(false),
+    year(""),
+    rating("Unrated")
+{}
 
 //Constructor that takes an isbn and populates the rest of the info from the database
-Book::Book(string _isbn) {
+Book::Book(const string& _isbn) {
     Json::Value data = readData();
     if (data["books"].isMember(_isbn)) {
         author = data["books"][_isbn]["author"].asString();
@@ -63,13 +64,14 @@ Book::Book(string _isbn) {
 }
 
 //Constructor that creates a new book and writes it to the database
-Book::Book(string _isbn, string _name, string _author, string _year) {
-    isbn = _isbn;
-    author = _author;
-    name = _name;
-    availability = true;
-    year = _year;
-    rating = "Unrated";
+Book::Book(const string& _isbn, const string& _name, const string& _author, const string& _year)
+    :isbn(_isbn),
+    author(_author),
+    name(_name),
+    availability(true),
+    year(_year),
+    rating("Unrated")
+{
 
     Json::Value data = readData();
 
@@ -88,7 +90,7 @@ Book::Book(string _isbn, string _name, string _author, string _year) {
 }
 
 //adds a review to a book, updating the object and database
-void Book::add_review(string username, string review) {
+void Book::add_review(const string& username, const string& review) {
 
     Json::Value data = readData();					//Store JSON data and make it accessible
 
@@ -103,10 +105,9 @@ void Book::add_review(string username, string review) {
 
     //UPDATE RATINGS of the current book------------------------------------------------------------ 
     //Access the current book ratings
+    Json::Value::Members keys = data["books"][isbn]["ratings"].getMemberNames();
     double total = 0;
-    for (auto const& user : data["books"][isbn]["ratings"].getMemberNames()) {
-        total += stod(data["books"][isbn]["ratings"][user].asString());
-    }
+    total = accumulate(keys.begin(), keys.end(), 0, [total](double accumulator, string i) {return total + stod(i); });
 
     double calculation = total / data["books"][isbn]["ratings"].getMemberNames().size();
     rating = to_string(calculation);                                //Convert into string
@@ -114,17 +115,16 @@ void Book::add_review(string username, string review) {
 
 
     writeData(data);
-    this->rating = rating;
     this->bookRatings[username] = review;
 }
 
 //adds a book to the database
-void Book::addBook(string _isbn, string _name, string _author, string _year) {
+void Book::addBook(const string& _isbn, const string& _name, const string& _author, const string& _year) {
     Book(_isbn, _name, _author, _year);
 }
 
 //removes a book from the database
-void Book::removeBook(string _isbn) {
+void Book::removeBook(const string& _isbn) {
     Json::Value data = readData();
     data["books"].removeMember(_isbn);
     writeData(data);
@@ -145,7 +145,7 @@ vector<Book> Book::getBookCollection() {
 }
 
 //returns a vector of book objects representing all books in the database that match the search parameter
-vector<Book> Book::searchBooks(string query) {
+vector<Book> Book::searchBooks(const string& query) {
     vector<Book> results;
     for (Book book : getBookCollection()) {
         if (book.name.find(query) != string::npos) {

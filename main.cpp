@@ -384,7 +384,7 @@ bool VerifyLogin(sf::RenderWindow& window, AccessManager& control, textBox& user
     return control.loggedIn;
 }
 
-void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, string message) {
+void DrawErrorMessage(sf::RenderWindow& window, sf::Vector2f posB, bool status, const string& message) {
     sf::Font outFont = loadFont("times new roman.ttf");
 
     //error box if there is an issue
