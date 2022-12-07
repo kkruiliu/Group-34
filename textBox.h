@@ -46,7 +46,7 @@ private:
 public:
 	textBox(){}
 
-	textBox(bool sel) {
+	explicit textBox(bool sel) {
 		text.setCharacterSize(25);
 		text.setColor(sf::Color::Black);
 		isSelected = sel;
@@ -82,7 +82,7 @@ public:
 			text.setString("");
 		}
 
-		else if (sel) {
+		else {
 			text.setString(input.str() + "|");
 		}
 	}
